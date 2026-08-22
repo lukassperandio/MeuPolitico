@@ -4,6 +4,7 @@ import com.meupolitico.dto.request.PoliticianRequest;
 import com.meupolitico.dto.response.PoliticianResponse;
 import com.meupolitico.entity.Politician;
 import com.meupolitico.enums.Gender;
+import com.meupolitico.exception.ResourceNotFoundException;
 import com.meupolitico.mapper.PoliticianMapper;
 import com.meupolitico.repository.PoliticianRepository;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class PoliticianService {
 
     public PoliticianResponse findById(Long id) {
         Politician politician = politicianRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Politician not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Politician not found with id: " + id));
 
         return politicianMapper.toResponse(politician);
     }
@@ -81,7 +82,7 @@ public class PoliticianService {
 
     public PoliticianResponse update(Long id, PoliticianRequest request) {
         Politician politician = politicianRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Politician not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Politician not found with id: " + id));
 
         politician.setExternalId(request.externalId());
         politician.setName(request.name());
@@ -101,7 +102,7 @@ public class PoliticianService {
 
     public void delete(Long id) {
         if (!politicianRepository.existsById(id)) {
-            throw new RuntimeException("Politician not found with id: " + id);
+            throw new ResourceNotFoundException("Politician not found with id: " + id);
         }
 
         politicianRepository.deleteById(id);
