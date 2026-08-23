@@ -1,6 +1,7 @@
 package com.meupolitico.repository;
 
 import com.meupolitico.entity.Expense;
+import com.meupolitico.enums.ExpenseCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +14,7 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
 
     List<Expense> findByPoliticianId(Long politicianId);
 
-    List<Expense> findByCategoryContainingIgnoreCase(String category);
+    List<Expense> findByCategory(ExpenseCategory category);
 
     List<Expense> findBySupplierContainingIgnoreCase(String supplier);
 

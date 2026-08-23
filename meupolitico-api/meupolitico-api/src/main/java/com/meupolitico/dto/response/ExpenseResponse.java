@@ -1,5 +1,7 @@
 package com.meupolitico.dto.response;
 
+import com.meupolitico.enums.ExpenseCategory;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,7 +12,7 @@ public record ExpenseResponse(
         String politicianName,
         BigDecimal amount,
         LocalDate date,
-        String category,
+        ExpenseCategory category,
         String supplier,
         String documentNumber,
         String description,

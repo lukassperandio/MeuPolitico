@@ -1,5 +1,6 @@
 package com.meupolitico.dto.request;
 
+import com.meupolitico.enums.ExpenseCategory;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -19,8 +20,7 @@ public record ExpenseRequest(
         @NotNull(message = "Date is required")
         LocalDate date,
 
-        @Size(max = 100, message = "Category must be at most 100 characters")
-        String category,
+        ExpenseCategory category,
 
         @Size(max = 200, message = "Supplier must be at most 200 characters")
         String supplier,

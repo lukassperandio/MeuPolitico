@@ -1,7 +1,10 @@
 package com.meupolitico.entity;
 
+import com.meupolitico.enums.ExpenseCategory;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -39,8 +42,9 @@ public class Expense {
     @Column(nullable = false)
     private LocalDate date;
 
-    @Column(length = 100)
-    private String category;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 50)
+    private ExpenseCategory category;
 
     @Column(length = 200)
     private String supplier;
