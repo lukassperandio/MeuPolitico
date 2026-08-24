@@ -4,12 +4,18 @@ import com.meupolitico.dto.request.ExpenseRequest;
 import com.meupolitico.dto.response.ExpenseResponse;
 import com.meupolitico.entity.Expense;
 import com.meupolitico.entity.Politician;
+import com.meupolitico.enums.ExpenseCategory;
 import com.meupolitico.exception.ResourceNotFoundException;
 import com.meupolitico.mapper.ExpenseMapper;
 import com.meupolitico.repository.ExpenseRepository;
 import com.meupolitico.repository.PoliticianRepository;
 import org.springframework.stereotype.Service;
+import com.meupolitico.repository.specification.ExpenseSpecification;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +44,6 @@ public class ExpenseService {
     public ExpenseResponse findById(Long id) {
         Expense expense = expenseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Expense not found with id: " + id));
-
         return expenseMapper.toResponse(expense);
     }
 
@@ -49,13 +54,62 @@ public class ExpenseService {
                 .collect(Collectors.toList());
     }
 
+    public List<ExpenseResponse> findByCategory(ExpenseCategory category) {
+        return expenseRepository.findByCategory(category)
+                .stream()
+                .map(expenseMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    public List<ExpenseResponse> findBySupplier(String supplier) {
+        return expenseRepository.findBySupplierContainingIgnoreCase(supplier)
+                .stream()
+                .map(expenseMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    public List<ExpenseResponse> findByDate(LocalDate date) {
+        return expenseRepository.findByDate(date)
+                .stream()
+                .map(expenseMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    public List<ExpenseResponse> findByDateRange(LocalDate startDate, LocalDate endDate) {
+        return expenseRepository.findByDateBetween(startDate, endDate)
+                .stream()
+                .map(expenseMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    public List<ExpenseResponse> findByMinAmount(BigDecimal amount) {
+        return expenseRepository.findByAmountGreaterThanEqual(amount)
+                .stream()
+                .map(expenseMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    public Page<ExpenseResponse> search(Long politicianId,
+                                        ExpenseCategory category,
+                                        String supplier,
+                                        LocalDate startDate,
+                                        LocalDate endDate,
+                                        BigDecimal minAmount,
+                                        Pageable pageable) {
+
+        var spec = ExpenseSpecification.withFilters(
+                politicianId, category, supplier, startDate, endDate, minAmount);
+
+        return expenseRepository.findAll(spec, pageable)
+                .map(expenseMapper::toResponse);
+    }
+
     public ExpenseResponse create(ExpenseRequest request) {
         Politician politician = politicianRepository.findById(request.politicianId())
                 .orElseThrow(() -> new ResourceNotFoundException("Politician not found with id: " + request.politicianId()));
 
         Expense expense = expenseMapper.toEntity(request, politician);
         Expense savedExpense = expenseRepository.save(expense);
-
         return expenseMapper.toResponse(savedExpense);
     }
 
@@ -76,7 +130,6 @@ public class ExpenseService {
         expense.setSource(request.source());
 
         Expense updatedExpense = expenseRepository.save(expense);
-
         return expenseMapper.toResponse(updatedExpense);
     }
 
@@ -84,7 +137,6 @@ public class ExpenseService {
         if (!expenseRepository.existsById(id)) {
             throw new ResourceNotFoundException("Expense not found with id: " + id);
         }
-
         expenseRepository.deleteById(id);
     }
 }
