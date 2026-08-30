@@ -59,7 +59,6 @@ public class CeapExpenseImportService {
         String url = ceapBaseUrl + "/Ano-" + year + ".json.zip";
         log.info("Downloading CEAP file: {}", url);
 
-        // 1) Políticos em memória (1 query)
         Map<String, Politician> politiciansByExternalId = new HashMap<>();
         for (Politician politician : politicianRepository.findAll()) {
             if (politician.getExternalId() != null) {
@@ -103,12 +102,16 @@ public class CeapExpenseImportService {
                     while (parser.nextToken() != null) {
                         if (parser.currentToken() == JsonToken.FIELD_NAME
                                 && "dados".equals(parser.currentName())) {
-                            parser.nextToken(); // START_ARRAY
+                            parser.nextToken();
 
                             while (parser.nextToken() != JsonToken.END_ARRAY) {
                                 CeapExpenseItem item = objectMapper.readValue(parser, CeapExpenseItem.class);
 
-                                if (item.idDeputado() == null || item.idDocumento() == null) {
+                                Integer deputyId = item.idDeputado() != null
+                                        ? item.idDeputado()
+                                        : item.numeroDeputadoID();
+
+                                if (deputyId == null || item.idDocumento() == null) {
                                     skippedNoPolitician++;
                                     continue;
                                 }
@@ -119,8 +122,12 @@ public class CeapExpenseImportService {
                                     continue;
                                 }
 
-                                Politician politician = politiciansByExternalId.get(
-                                        String.valueOf(item.idDeputado()));
+                                Politician politician = politiciansByExternalId.get(String.valueOf(deputyId));
+                                if (politician == null) {
+                                    skippedNoPolitician++;
+                                    continue;
+                                }
+
                                 if (politician == null) {
                                     skippedNoPolitician++;
                                     continue;
@@ -192,9 +199,26 @@ public class CeapExpenseImportService {
             return ExpenseCategory.OTHER;
         }
 
-        String key = normalizeKey(state, rawLabel);
-        ExpenseCategory mapped = mappings.get(key);
-        return mapped != null ? mapped : ExpenseCategory.OTHER;
+        String normalizedLabel = rawLabel.trim().toUpperCase().replaceAll("\\s+", " ");
+
+        String keyWithState = normalizeKey(state, normalizedLabel);
+        ExpenseCategory mapped = mappings.get(keyWithState);
+        if (mapped != null) {
+            return mapped;
+        }
+
+        ExpenseCategory byLabel = mappings.get(normalizeKey("", normalizedLabel));
+        if (byLabel != null) {
+            return byLabel;
+        }
+
+        for (Map.Entry<String, ExpenseCategory> entry : mappings.entrySet()) {
+            if (entry.getKey().endsWith("|" + normalizedLabel)) {
+                return entry.getValue();
+            }
+        }
+
+        return ExpenseCategory.OTHER;
     }
 
     private String normalizeKey(String state, String label) {
