@@ -61,6 +61,9 @@ public class Expense {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "external_id", length = 100, unique = true)
+    private String externalId;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
