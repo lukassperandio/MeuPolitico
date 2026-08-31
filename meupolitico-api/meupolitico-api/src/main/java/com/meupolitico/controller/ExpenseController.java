@@ -34,8 +34,8 @@ public class ExpenseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ExpenseResponse>> findAll() {
-        return ResponseEntity.ok(expenseService.findAll());
+    public ResponseEntity<Page<ExpenseResponse>> findAll(Pageable pageable) {
+        return ResponseEntity.ok(expenseService.findAll(pageable));
     }
 
     @GetMapping("/{id}")

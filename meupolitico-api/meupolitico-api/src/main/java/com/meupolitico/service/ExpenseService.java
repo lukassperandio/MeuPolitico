@@ -34,11 +34,9 @@ public class ExpenseService {
         this.expenseMapper = expenseMapper;
     }
 
-    public List<ExpenseResponse> findAll() {
-        return expenseRepository.findAll()
-                .stream()
-                .map(expenseMapper::toResponse)
-                .collect(Collectors.toList());
+    public Page<ExpenseResponse> findAll(Pageable pageable) {
+        return expenseRepository.findAll(pageable)
+                .map(expenseMapper::toResponse);
     }
 
     public ExpenseResponse findById(Long id) {

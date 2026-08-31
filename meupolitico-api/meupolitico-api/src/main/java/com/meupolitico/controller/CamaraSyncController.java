@@ -5,6 +5,7 @@ import com.meupolitico.integration.camara.dto.CamaraDeputySummary;
 import com.meupolitico.integration.camara.dto.CamaraExpenseItem;
 import com.meupolitico.service.CamaraSyncService;
 import com.meupolitico.service.CeapExpenseImportService;
+import com.meupolitico.service.ExpenseRecategorizeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,12 +23,15 @@ public class CamaraSyncController {
     private final CamaraDeputyClient camaraDeputyClient;
     private final CeapExpenseImportService ceapExpenseImportService;
     private final CamaraSyncService camaraSyncService;
+    private final ExpenseRecategorizeService expenseRecategorizeService;
 
     public CamaraSyncController(CamaraDeputyClient camaraDeputyClient,
-                                CamaraSyncService camaraSyncService, CeapExpenseImportService ceapExpenseImportService) {
+                                CamaraSyncService camaraSyncService, CeapExpenseImportService ceapExpenseImportService, ExpenseRecategorizeService expenseRecategorizeService
+    ) {
         this.camaraDeputyClient = camaraDeputyClient;
         this.camaraSyncService = camaraSyncService;
         this.ceapExpenseImportService = ceapExpenseImportService;
+        this.expenseRecategorizeService = expenseRecategorizeService;
     }
 
     @GetMapping("/deputies/preview")
@@ -54,5 +58,11 @@ public class CamaraSyncController {
     public ResponseEntity<String> importCeapExpenses(@PathVariable int year) {
         int imported = ceapExpenseImportService.importYear(year);
         return ResponseEntity.ok("CEAP " + year + " import completed. New expenses: " + imported);
+    }
+
+    @PostMapping("/expenses/recategorize")
+    public ResponseEntity<String> recategorizeExpenses() {
+        int updated = expenseRecategorizeService.recategorizeAll();
+        return ResponseEntity.ok("Recategorize completed. Updated expenses: " + updated);
     }
 }
