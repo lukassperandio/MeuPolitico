@@ -1,0 +1,27 @@
+<section class="detail">
+  <a routerLink="/politicians">← Voltar</a>
+
+  @if (state$ | async; as state) {
+    @if (state.loading) {
+      <p>Carregando...</p>
+    }
+
+    @if (state.error) {
+      <p class="error">{{ state.error }}</p>
+    }
+
+    @if (state.politician; as p) {
+      <div class="header">
+        @if (p.photoUrl) {
+          <img [src]="p.photoUrl" [alt]="p.name" width="120" height="120" />
+        }
+        <div>
+          <h1>{{ p.name }}</h1>
+          <p>{{ p.party }} · {{ p.state }}</p>
+          <p>{{ p.position }}</p>
+          <p>Status: {{ p.status }}</p>
+        </div>
+      </div>
+    }
+  }
+</section>

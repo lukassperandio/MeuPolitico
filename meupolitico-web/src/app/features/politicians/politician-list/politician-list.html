@@ -1,0 +1,38 @@
+<section class="list">
+  <h1>Políticos</h1>
+
+  <input
+    type="search"
+    [formControl]="searchControl"
+    placeholder="Buscar por nome..."
+    class="search"
+  />
+
+  @if (state$ | async; as state) {
+    @if (state.loading) {
+      <p>Carregando...</p>
+    }
+
+    @if (state.error) {
+      <p class="error">{{ state.error }}</p>
+    }
+
+    @if (!state.loading && !state.error && state.politicians.length === 0) {
+      <p>Nenhum político encontrado.</p>
+    }
+
+    @if (!state.loading && !state.error) {
+      <ul>
+        @for (p of state.politicians; track p.id) {
+          <li>
+            <a [routerLink]="['/politicians', p.id]">
+              <strong>{{ p.name }}</strong>
+              — {{ p.party }} / {{ p.state }}
+              <span class="position">{{ p.position }}</span>
+            </a>
+          </li>
+        }
+      </ul>
+    }
+  }
+</section>
