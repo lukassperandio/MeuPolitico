@@ -133,6 +133,20 @@ public class ExpenseRecategorizeService {
         if (label.contains("SEGURAN")) {
             return ExpenseCategory.SECURITY;
         }
+
+        if (label.contains("TÁXI") || label.contains("TAXI")
+                || label.contains("PEDÁGIO") || label.contains("PEDAGIO")
+                || label.contains("ESTACIONAMENTO")
+                || label.contains("PASSAGENS TERRESTRES")
+                || label.contains("MARÍTIMAS") || label.contains("MARITIMAS")
+                || label.contains("FLUVIAIS")) {
+            return ExpenseCategory.GROUND_TRANSPORT;
+        }
+        if (label.contains("ASSINATURA DE PUBLICAÇÕES") || label.contains("PUBLICAÇÕES")
+                || label.contains("TOKEN") || label.contains("CERTIFICADO DIGITAL")) {
+            return ExpenseCategory.OFFICE_SUPPLIES;
+        }
+
         return ExpenseCategory.OTHER;
     }
 

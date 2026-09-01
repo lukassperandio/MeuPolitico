@@ -21,6 +21,7 @@ public enum ExpenseCategory {
     EVENTS("Eventos e representação"),
     LEGAL_FEES("Honorários advocatícios"),
     HEALTH("Plano de saúde / assistência médica"),
+    GROUND_TRANSPORT("Táxi, pedágio, estacionamento e passagens terrestres/marítimas/fluviais"),
     OTHER("Outros");
 
     private final String description;
