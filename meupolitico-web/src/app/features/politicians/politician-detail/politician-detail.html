@@ -2,26 +2,58 @@
   <a routerLink="/politicians">← Voltar</a>
 
   @if (state$ | async; as state) {
-    @if (state.loading) {
-      <p>Carregando...</p>
-    }
+  @if (state.loading) {
+  <p>Carregando...</p>
+  }
 
-    @if (state.error) {
-      <p class="error">{{ state.error }}</p>
-    }
+  @if (state.error) {
+  <p class="error">{{ state.error }}</p>
+  }
 
-    @if (state.politician; as p) {
-      <div class="header">
-        @if (p.photoUrl) {
-          <img [src]="p.photoUrl" [alt]="p.name" width="120" height="120" />
+  @if (state.politician; as p) {
+  <div class="header">
+    @if (p.photoUrl) {
+    <img [src]="p.photoUrl" [alt]="p.name" width="120" height="120" />
+    }
+    <div>
+      <h1>{{ p.name }}</h1>
+      <p>{{ p.party }} · {{ p.state }}</p>
+      <p>{{ p.position }}</p>
+      <p>Status: {{ p.status }}</p>
+    </div>
+  </div>
+
+  <section class="expenses">
+    <h2>Gastos</h2>
+    <p class="meta">
+      Mostrando {{ state.expenses.length }} de {{ state.totalExpenses }} registros
+    </p>
+
+    @if (state.expenses.length === 0) {
+    <p>Nenhuma despesa encontrada.</p>
+    } @else {
+    <table>
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Categoria</th>
+          <th>Fornecedor</th>
+          <th>Valor</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (e of state.expenses; track e.id) {
+        <tr>
+          <td>{{ e.date | date: 'dd/MM/yyyy' }}</td>
+          <td>{{ e.category | expenseCategoryLabel }}</td>
+          <td>{{ e.supplier || '—' }}</td>
+          <td class="amount">{{ e.amount | currency: 'BRL' }}</td>
+        </tr>
         }
-        <div>
-          <h1>{{ p.name }}</h1>
-          <p>{{ p.party }} · {{ p.state }}</p>
-          <p>{{ p.position }}</p>
-          <p>Status: {{ p.status }}</p>
-        </div>
-      </div>
+      </tbody>
+    </table>
     }
+  </section>
+  }
   }
 </section>
