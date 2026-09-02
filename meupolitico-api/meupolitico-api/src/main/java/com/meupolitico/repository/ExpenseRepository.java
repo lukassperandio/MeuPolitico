@@ -34,4 +34,14 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long>,
 
     @Query("select e.externalId from Expense e where e.externalId is not null")
     List<String> findAllExternalIds();
+
+    @Query(value = """
+    SELECT e.politician_id AS politicianId,
+           SUM(e.amount) AS total
+    FROM expense e
+    GROUP BY e.politician_id
+    ORDER BY total DESC
+    LIMIT 50
+    """, nativeQuery = true)
+    List<Object[]> findTopExpenseTotals();
 }
