@@ -82,3 +82,46 @@
     cursor: default;
   }
 }
+
+.block {
+  margin-top: 2rem;
+}
+
+.note {
+  font-size: 0.9rem;
+  color: #555;
+  background: #f4f4f4;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  border-left: 3px solid #888;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0;
+
+  input,
+  select {
+    padding: 0.45rem 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.9rem;
+  }
+
+  button {
+    padding: 0.45rem 0.9rem;
+    border: none;
+    border-radius: 6px;
+    background: #111;
+    color: #fff;
+    cursor: pointer;
+
+    &.secondary {
+      background: #eee;
+      color: #111;
+      border: 1px solid #ccc;
+    }
+  }
+}

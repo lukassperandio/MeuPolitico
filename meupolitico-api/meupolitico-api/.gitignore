@@ -67,7 +67,3 @@ Thumbs.db
 *.env
 .env
 *.bak
-
-db/
-/data/tse/
-/dados-candidatos

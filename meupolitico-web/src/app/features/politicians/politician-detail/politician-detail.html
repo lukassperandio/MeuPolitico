@@ -22,21 +22,79 @@
     </div>
   </div>
 
-  <section class="expenses">
+  <!-- ASSIDUIDADE -->
+  <section class="block">
+    <h2>Assiduidade</h2>
+    <p class="note">
+      Fonte: presenças registadas em eventos da Câmara. O ficheiro oficial lista quem esteve presente
+      (não publica lista completa de faltas).
+    </p>
+    @if (presenceCount > 0) {
+    <p>
+      <strong>{{ presenceCount }}</strong> presenças registadas
+      @if (attendanceSummary?.attendancePercentage != null) {
+      · {{ attendanceSummary!.attendancePercentage | number: '1.0-1' }}%
+      (quando o total de sessões está disponível)
+      }
+    </p>
+    } @else {
+    <p>Sem dados de presença para este político.</p>
+    }
+  </section>
+
+  <!-- PATRIMÓNIO -->
+  <section class="block">
+    <h2>Patrimônio</h2>
+    <p class="note">
+      Declaração de bens ao <strong>TSE</strong> no registo de candidatura
+      (eleições, em regra de 4 em 4 anos — ex.: 2022 e 2026).
+      <strong>Não há atualização oficial anualmente</strong> durante o mandato.
+    </p>
+    @if (assetEvolution?.points?.length) {
+    <ul>
+      @for (pt of assetEvolution!.points; track pt.year) {
+      <li>
+        <strong>{{ pt.year }}</strong>:
+        {{ pt.declaredValue | currency: 'BRL' }}
+        @if (pt.variationPercentage != null) {
+        ({{ pt.variationPercentage | number: '1.1-1' }}%)
+        }
+      </li>
+      }
+    </ul>
+    } @else {
+    <p>Sem declaração de bens associada a este político.</p>
+    }
+  </section>
+
+  <!-- GASTOS -->
+  <section class="expenses block">
     <h2>Gastos</h2>
 
+    <form class="filters" [formGroup]="filterForm" (ngSubmit)="applyFilters()">
+      <input type="text" formControlName="supplier" placeholder="Fornecedor / empresa" />
+      <input type="date" formControlName="startDate" title="Data inicial" />
+      <input type="date" formControlName="endDate" title="Data final" />
+      <input type="number" formControlName="minAmount" placeholder="Valor mínimo" step="0.01" />
+      <select formControlName="sort">
+        <option value="date,desc">Data (mais recente)</option>
+        <option value="date,asc">Data (mais antiga)</option>
+        <option value="amount,desc">Valor (maior)</option>
+        <option value="amount,asc">Valor (menor)</option>
+        <option value="supplier,asc">Empresa (A–Z)</option>
+        <option value="supplier,desc">Empresa (Z–A)</option>
+      </select>
+      <button type="submit">Filtrar</button>
+      <button type="button" class="secondary" (click)="clearFilters()">Limpar</button>
+    </form>
+
     <div class="summary">
-      <p>
-        <strong>{{ totalElements }}</strong> despesas registadas
-      </p>
-      <p>
-        Soma (itens carregados):
-        <strong>{{ loadedTotalAmount | currency: 'BRL' }}</strong>
-      </p>
+      <p><strong>{{ totalElements }}</strong> despesas (filtro atual)</p>
+      <p>Soma (itens carregados): <strong>{{ loadedTotalAmount | currency: 'BRL' }}</strong></p>
     </div>
 
-    @if (expenses.length === 0) {
-    <p>Nenhuma despesa encontrada.</p>
+    @if (expenses.length === 0 && !expensesLoading) {
+    <p>Nenhuma despesa encontrada com estes filtros.</p>
     } @else {
     <table>
       <thead>
@@ -64,28 +122,6 @@
       {{ expensesLoading ? 'A carregar...' : 'Carregar mais' }}
     </button>
     }
-    }
-  </section>
-  <section class="block">
-    <h2>Assiduidade</h2>
-    @if (attendanceSummary; as a) {
-    <p>{{ a.attendancePercentage | number: '1.1-1' }}% de presença
-      ({{ a.present }} presentes / {{ a.totalSessions }} sessões)</p>
-    } @else {
-    <p>Sem dados de presença.</p>
-    }
-  </section>
-
-  <section class="block">
-    <h2>Patrimônio</h2>
-    @if (assetEvolution?.points?.length) {
-    <ul>
-      @for (pt of assetEvolution!.points; track pt.year) {
-      <li>{{ pt.year }}: {{ pt.declaredValue | currency: 'BRL' }}</li>
-      }
-    </ul>
-    } @else {
-    <p>Sem dados de patrimônio.</p>
     }
   </section>
   }
