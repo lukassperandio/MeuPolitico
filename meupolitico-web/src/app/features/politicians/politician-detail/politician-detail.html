@@ -1,26 +1,33 @@
 <section class="detail">
-  <a routerLink="/politicians">← Voltar</a>
 
   @if (loading) {
-  <p>Carregando...</p>
+    <p>Carregando...</p>
   }
 
   @if (error) {
-  <p class="error">{{ error }}</p>
+    <p class="error">{{ error }}</p>
   }
 
   @if (!loading && politician; as p) {
-  <div class="header">
-    @if (p.photoUrl) {
-    <img [src]="p.photoUrl" [alt]="p.name" width="120" height="120" />
-    }
-    <div>
-      <h1>{{ p.name }}</h1>
-      <p>{{ p.party }} · {{ p.state }}</p>
-      <p>{{ p.position }}</p>
-      <p>Status: {{ p.status }}</p>
+    <div class="hero">
+      <a routerLink="/politicians" style="color:#cfe6ff;font-size:0.85rem;font-weight:600;">← Voltar</a>
+      <div class="profile-id">
+        @if (p.photoUrl) {
+          <img [src]="p.photoUrl" [alt]="p.name" />
+        }
+        <div>
+          <h1>{{ p.name }}</h1>
+          <p>{{ p.position }}</p>
+          <div class="tags">
+            <span class="ptag">{{ p.party }}</span>
+            <span class="ptag">{{ p.state }}</span>
+          </div>
+          @if (p.status) {
+            <p style="margin-top:0.4rem;font-size:0.8rem;color:#cfe6ff;">Status: {{ p.status }}</p>
+          }
+        </div>
+      </div>
     </div>
-  </div>
 
   <!-- ASSIDUIDADE -->
   <section class="block">

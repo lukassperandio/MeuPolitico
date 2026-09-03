@@ -125,3 +125,132 @@
     }
   }
 }
+
+.detail {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1rem 1rem 3rem;
+}
+
+.hero {
+  background: linear-gradient(160deg, var(--blue-deep) 0%, #0e4c7a 55%, var(--green) 130%);
+  border-radius: 20px;
+  padding: 1.5rem 1.25rem;
+  color: #fff;
+  margin-bottom: 1.25rem;
+
+  h1 {
+    color: #fff;
+    margin: 0.35rem 0;
+  }
+
+  p {
+    margin: 0.2rem 0;
+    color: #cfe6ff;
+    font-size: 0.9rem;
+  }
+
+  .tags {
+    display: flex;
+    gap: 0.4rem;
+    margin-top: 0.6rem;
+  }
+
+  .ptag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.18);
+    padding: 0.25rem 0.55rem;
+    border-radius: 6px;
+  }
+
+  img {
+    width: 72px;
+    height: 72px;
+    border-radius: 18px;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+  }
+
+  .profile-id {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-top: 0.5rem;
+  }
+}
+
+.block {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.15rem;
+  margin-top: 1rem;
+  box-shadow: var(--shadow);
+
+  h2 {
+    margin: 0 0 0.65rem;
+    font-size: 1.1rem;
+  }
+}
+
+.expenses {
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+
+  th {
+    text-align: left;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    padding: 0.5rem 0.35rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 0.65rem 0.35rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .amount {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    color: var(--blue-deep);
+    white-space: nowrap;
+  }
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.load-more {
+  display: block;
+  margin: 1.25rem auto 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.55rem 1.1rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--blue-deep);
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: var(--blue-pale);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+}

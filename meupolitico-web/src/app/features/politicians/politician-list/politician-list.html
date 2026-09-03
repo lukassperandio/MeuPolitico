@@ -1,38 +1,47 @@
-<section class="list">
-  <h1>Políticos</h1>
+<section class="page list-page">
+  <p class="eyebrow">Transparência federal</p>
+  <h1>Quem você quer <span>fiscalizar</span> hoje?</h1>
 
-  <input
-    type="search"
-    [formControl]="searchControl"
-    placeholder="Buscar por nome..."
-    class="search"
-  />
+  <div class="searchbar">
+    <input
+      type="search"
+      [formControl]="searchControl"
+      placeholder="Nome, partido ou estado…"
+    />
+  </div>
 
   @if (state$ | async; as state) {
     @if (state.loading) {
-      <p>Carregando...</p>
+      <p class="muted">Carregando...</p>
     }
-
     @if (state.error) {
       <p class="error">{{ state.error }}</p>
     }
-
     @if (!state.loading && !state.error && state.politicians.length === 0) {
-      <p>Nenhum político encontrado.</p>
+      <p class="muted">Nenhum político encontrado.</p>
     }
-
     @if (!state.loading && !state.error) {
-      <ul>
+      <div class="cards">
         @for (p of state.politicians; track p.id) {
-          <li>
-            <a [routerLink]="['/politicians', p.id]">
-              <strong>{{ p.name }}</strong>
-              — {{ p.party }} / {{ p.state }}
-              <span class="position">{{ p.position }}</span>
-            </a>
-          </li>
+          <a class="pol-card" [routerLink]="['/politicians', p.id]">
+            @if (p.photoUrl) {
+              <img class="avatar" [src]="p.photoUrl" [alt]="p.name" />
+            } @else {
+              <div class="avatar placeholder">{{ p.name.charAt(0) }}</div>
+            }
+            <div class="info">
+              <div class="n">{{ p.name }}</div>
+              <div class="m">
+                <span class="party-tag">{{ p.party }}</span>
+                {{ p.position }} · {{ p.state }}
+              </div>
+              <div class="m">
+                <span class="source-chip">Câmara</span>
+              </div>
+            </div>
+          </a>
         }
-      </ul>
+      </div>
     }
   }
 </section>

@@ -64,3 +64,73 @@
 .error {
   color: #b00020;
 }
+
+.page h1 {
+  margin-bottom: 1rem;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.35rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.25rem;
+  margin-bottom: 1rem;
+
+  button {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 0.55rem;
+    border-radius: 9px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--muted);
+    cursor: pointer;
+
+    &.active {
+      background: var(--blue-deep);
+      color: #fff;
+    }
+  }
+}
+
+.ranking {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.55rem;
+    box-shadow: var(--shadow);
+  }
+
+  .pos {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: var(--blue-mid);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+  }
+
+  .value {
+    margin-left: auto;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    color: var(--blue-deep);
+  }
+}

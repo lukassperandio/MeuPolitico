@@ -1,9 +1,10 @@
 .header {
-  border-bottom: 1px solid #e8e8e8;
-  background: #fff;
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 20;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
 }
 
 .inner {
@@ -17,34 +18,48 @@
 }
 
 .brand {
-  text-decoration: none;
-  color: #111;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
 }
 
-.logo {
+.mark {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--blue-deep), var(--green));
+}
+
+.name {
+  font-family: 'Space Grotesk', sans-serif;
   font-weight: 700;
-  font-size: 1.15rem;
-  letter-spacing: -0.02em;
+  font-size: 1.1rem;
+  color: var(--blue-deep);
+
+  span {
+    color: var(--green);
+  }
 }
 
 .nav {
   display: flex;
-  gap: 1rem;
+  gap: 0.35rem;
 
   a {
-    text-decoration: none;
-    color: #555;
-    font-size: 0.95rem;
-    padding: 0.25rem 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--muted);
+    padding: 0.4rem 0.75rem;
+    border-radius: 999px;
 
     &:hover {
-      color: #111;
+      color: var(--blue-deep);
+      background: var(--blue-pale);
     }
 
     &.active {
-      color: #111;
-      font-weight: 600;
-      border-bottom: 2px solid #111;
+      color: #fff;
+      background: var(--blue-deep);
     }
   }
 }
