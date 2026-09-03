@@ -1,16 +1,15 @@
 <section class="detail">
   <a routerLink="/politicians">← Voltar</a>
 
-  @if (state$ | async; as state) {
-  @if (state.loading) {
+  @if (loading) {
   <p>Carregando...</p>
   }
 
-  @if (state.error) {
-  <p class="error">{{ state.error }}</p>
+  @if (error) {
+  <p class="error">{{ error }}</p>
   }
 
-  @if (state.politician; as p) {
+  @if (!loading && politician; as p) {
   <div class="header">
     @if (p.photoUrl) {
     <img [src]="p.photoUrl" [alt]="p.name" width="120" height="120" />
@@ -25,11 +24,18 @@
 
   <section class="expenses">
     <h2>Gastos</h2>
-    <p class="meta">
-      Mostrando {{ state.expenses.length }} de {{ state.totalExpenses }} registros
-    </p>
 
-    @if (state.expenses.length === 0) {
+    <div class="summary">
+      <p>
+        <strong>{{ totalElements }}</strong> despesas registadas
+      </p>
+      <p>
+        Soma (itens carregados):
+        <strong>{{ loadedTotalAmount | currency: 'BRL' }}</strong>
+      </p>
+    </div>
+
+    @if (expenses.length === 0) {
     <p>Nenhuma despesa encontrada.</p>
     } @else {
     <table>
@@ -42,7 +48,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (e of state.expenses; track e.id) {
+        @for (e of expenses; track e.id) {
         <tr>
           <td>{{ e.date | date: 'dd/MM/yyyy' }}</td>
           <td>{{ e.category | expenseCategoryLabel }}</td>
@@ -52,8 +58,35 @@
         }
       </tbody>
     </table>
+
+    @if (hasMore) {
+    <button type="button" class="load-more" [disabled]="expensesLoading" (click)="loadMore()">
+      {{ expensesLoading ? 'A carregar...' : 'Carregar mais' }}
+    </button>
+    }
     }
   </section>
-  }
+  <section class="block">
+    <h2>Assiduidade</h2>
+    @if (attendanceSummary; as a) {
+    <p>{{ a.attendancePercentage | number: '1.1-1' }}% de presença
+      ({{ a.present }} presentes / {{ a.totalSessions }} sessões)</p>
+    } @else {
+    <p>Sem dados de presença.</p>
+    }
+  </section>
+
+  <section class="block">
+    <h2>Patrimônio</h2>
+    @if (assetEvolution?.points?.length) {
+    <ul>
+      @for (pt of assetEvolution!.points; track pt.year) {
+      <li>{{ pt.year }}: {{ pt.declaredValue | currency: 'BRL' }}</li>
+      }
+    </ul>
+    } @else {
+    <p>Sem dados de patrimônio.</p>
+    }
+  </section>
   }
 </section>

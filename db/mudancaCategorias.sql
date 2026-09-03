@@ -46,15 +46,6 @@ ON CONFLICT DO NOTHING;
 
 
 
---> terminar esses insert
-INSERT INTO expense_category_mapping (state, raw_category_label, mapped_category, created_at) VALUES
-('', 'SERVIÇO DE TÁXI, PEDÁGIO E ESTACIONAMENTO', 'GROUND_TRANSPORT', NOW()),
-('', 'PASSAGENS TERRESTRES, MARÍTIMAS OU FLUVIAIS', 'GROUND_TRANSPORT', NOW()),
-('', 'ASSINATURA DE PUBLICAÇÕES', 'OFFICE_SUPPLIES', NOW()),
-('', 'AQUISIÇÃO DE TOKENS E CERTIFICADOS DIGITAIS', 'OFFICE_SUPPLIES', NOW());
-
-
-
 
 
 

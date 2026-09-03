@@ -1,0 +1,50 @@
+.header {
+  border-bottom: 1px solid #e8e8e8;
+  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.inner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.brand {
+  text-decoration: none;
+  color: #111;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+}
+
+.nav {
+  display: flex;
+  gap: 1rem;
+
+  a {
+    text-decoration: none;
+    color: #555;
+    font-size: 0.95rem;
+    padding: 0.25rem 0;
+
+    &:hover {
+      color: #111;
+    }
+
+    &.active {
+      color: #111;
+      font-weight: 600;
+      border-bottom: 2px solid #111;
+    }
+  }
+}

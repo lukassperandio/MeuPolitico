@@ -53,3 +53,32 @@
     white-space: nowrap;
   }
 }
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  margin: 0.5rem 0 1rem;
+  color: #444;
+  font-size: 0.95rem;
+}
+
+.load-more {
+  display: block;
+  margin: 1.25rem auto 0;
+  padding: 0.6rem 1.25rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #f7f7f7;
+  cursor: pointer;
+  font-size: 0.95rem;
+
+  &:hover:not(:disabled) {
+    background: #eee;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+}

@@ -1,0 +1,37 @@
+<section class="page">
+  <h1>Rankings</h1>
+
+  <div class="tabs">
+    <button type="button" [class.active]="type === 'expenses'" (click)="setType('expenses')">Gastos</button>
+    <button type="button" [class.active]="type === 'attendance'" (click)="setType('attendance')">Assiduidade</button>
+    <button type="button" [class.active]="type === 'assets'" (click)="setType('assets')">Patrimônio</button>
+  </div>
+
+  @if (loading) {
+  <p>Carregando...</p>
+  }
+  @if (error) {
+  <p class="error">{{ error }}</p>
+  }
+
+  @if (!loading && !error) {
+  <ol class="ranking">
+    @for (item of items; track item.politicianId) {
+    <li>
+      <span class="pos">{{ item.position }}º</span>
+      <a [routerLink]="['/politicians', item.politicianId]">
+        <strong>{{ item.politicianName }}</strong>
+        <span class="meta">{{ item.party }} · {{ item.state }}</span>
+      </a>
+      <span class="value">
+        @if (type === 'expenses' || type === 'assets') {
+        {{ item.value | currency: 'BRL' }}
+        } @else {
+        {{ item.value | number: '1.1-1' }}%
+        }
+      </span>
+    </li>
+    }
+  </ol>
+  }
+</section>

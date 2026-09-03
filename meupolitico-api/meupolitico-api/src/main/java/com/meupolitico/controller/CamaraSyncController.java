@@ -3,6 +3,7 @@ package com.meupolitico.controller;
 import com.meupolitico.integration.camara.CamaraDeputyClient;
 import com.meupolitico.integration.camara.dto.CamaraDeputySummary;
 import com.meupolitico.integration.camara.dto.CamaraExpenseItem;
+import com.meupolitico.service.CamaraAttendanceImportService;
 import com.meupolitico.service.CamaraSyncService;
 import com.meupolitico.service.CeapExpenseImportService;
 import com.meupolitico.service.ExpenseRecategorizeService;
@@ -30,15 +31,17 @@ public class CamaraSyncController {
     private final CeapExpenseImportService ceapExpenseImportService;
     private final CamaraSyncService camaraSyncService;
     private final ExpenseRecategorizeService expenseRecategorizeService;
+    private final CamaraAttendanceImportService camaraAttendanceImportService;
 
     public CamaraSyncController(CamaraDeputyClient camaraDeputyClient,
                                 CamaraSyncService camaraSyncService,
                                 CeapExpenseImportService ceapExpenseImportService,
-                                ExpenseRecategorizeService expenseRecategorizeService) {
+                                ExpenseRecategorizeService expenseRecategorizeService, CamaraAttendanceImportService camaraAttendanceImportService) {
         this.camaraDeputyClient = camaraDeputyClient;
         this.camaraSyncService = camaraSyncService;
         this.ceapExpenseImportService = ceapExpenseImportService;
         this.expenseRecategorizeService = expenseRecategorizeService;
+        this.camaraAttendanceImportService = camaraAttendanceImportService;
     }
 
     @GetMapping("/deputies/preview")
@@ -100,5 +103,12 @@ public class CamaraSyncController {
     public ResponseEntity<String> recategorizeExpenses() {
         int updated = expenseRecategorizeService.recategorizeAll();
         return ResponseEntity.ok("Recategorize completed. Updated expenses: " + updated);
+    }
+
+    @PostMapping("/attendance/{year}")
+    @Operation(summary = "Importar presenças de eventos da Câmara")
+    public ResponseEntity<String> importAttendance(@PathVariable int year) {
+        int imported = camaraAttendanceImportService.importYear(year);
+        return ResponseEntity.ok("Attendance " + year + " import completed. New records: " + imported);
     }
 }

@@ -18,13 +18,14 @@ export class ExpenseService {
   searchByPolitician(
     politicianId: number,
     page = 0,
-    size = 20
+    size = 20,
+    sort = 'date,desc'
   ): Observable<Page<Expense>> {
     const params = new HttpParams()
       .set('politicianId', politicianId)
       .set('page', page)
       .set('size', size)
-      .set('sort', 'date,desc');
+      .set('sort', sort);
 
     return this.http.get<Page<Expense>>(`${this.baseUrl}/search`, { params });
   }

@@ -35,7 +35,7 @@ public class Attendance {
     @JoinColumn(name = "politician_id", nullable = false)
     private Politician politician;
 
-    @Column(name = "external_id", length = 100)
+    @Column(name = "external_id", length = 120, unique = true)
     private String externalId;
 
     @Column(nullable = false)

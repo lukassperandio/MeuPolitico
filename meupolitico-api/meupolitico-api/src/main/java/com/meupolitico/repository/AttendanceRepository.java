@@ -35,4 +35,9 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long>,
     LIMIT 50
     """, nativeQuery = true)
     List<Object[]> findTopAttendancePercentages();
+
+    boolean existsByExternalId(String externalId);
+
+    @Query("select a.externalId from Attendance a where a.externalId is not null")
+    List<String> findAllExternalIds();
 }
