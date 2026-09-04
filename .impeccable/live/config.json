@@ -1,0 +1,6 @@
+{
+  "files": ["meupolitico-web/src/index.html"],
+  "insertBefore": "</body>",
+  "commentSyntax": "html",
+  "cspChecked": true
+}

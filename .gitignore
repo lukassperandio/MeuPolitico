@@ -1,6 +1,23 @@
-# Compiled class files
+# Node / Angular
+node_modules/
+dist/
+.angular/
+
+# Maven / Java
+target/
 *.class
 
+# Dados brutos (não deve ir pro git — é pesado e não é código)
+dados-candidatos/
 
-/data/tse/
-/dados-candidatos   
+# Impeccable (se ele criar cache/estado local)
+.impeccable/cache/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+.gemini
+.grok
+.claude
