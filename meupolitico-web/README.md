@@ -1,59 +1,96 @@
-# MeupoliticoWeb
+# MeuPolítico Web
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.3.
+Angular frontend for **MeuPolítico** — a political transparency app focused on Brazil.
 
-## Development server
+Browse federal deputies, parliamentary expenses (CEAP), attendance, declared assets (TSE), rankings, and side-by-side comparison. Data comes from official public sources via the MeuPolítico API.
 
-To start a local development server, run:
+## Stack
+
+| Layer | Technology |
+|--------|------------|
+| Framework | Angular 21 |
+| Language | TypeScript |
+| Styling | SCSS |
+| API client | HttpClient + dev proxy |
+
+## Prerequisites
+
+- Node.js 20+ (LTS recommended)
+- npm 10+
+- Running **MeuPolítico API** on `http://localhost:8080`
+
+## Setup
+
+```bash
+npm install
+```
+
+Dev proxy (`proxy.conf.json`) forwards `/api` to the Spring API:
+
+```json
+{
+  "/api": {
+    "target": "http://localhost:8080",
+    "secure": false,
+    "changeOrigin": true
+  }
+}
+```
+
+Ensure `angular.json` → `serve` → `options` includes:
+
+```json
+"proxyConfig": "proxy.conf.json"
+```
+
+## Run
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Open [http://localhost:4200](http://localhost:4200).
 
-## Code scaffolding
+The API must be running on port **8080**, otherwise politician/expense requests will fail.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Main routes
 
-```bash
-ng generate component component-name
+| Path | Description |
+|------|-------------|
+| `/politicians` | Search and list |
+| `/politicians/:id` | Profile (expenses, attendance, assets) |
+| `/rankings` | Top 50 rankings |
+| `/compare` | Compare up to 3 politicians |
+
+## Features
+
+- Name search for politicians
+- Expense table with filters (supplier, date range, min amount) and sort
+- Attendance and asset sections with official source disclaimers
+- Rankings: expenses, attendance, assets
+- Comparison view
+
+## Data notes (honest limits)
+
+- **Expenses:** Chamber of Deputies CEAP (official yearly files)
+- **Attendance:** presence at Chamber events (official files list who was present; they are not a full absence roster)
+- **Assets:** TSE declarations at **election registration** (e.g. 2022, 2026) — not updated yearly during the term
+- Current scope: **federal deputies**
+
+## Project layout
+
+```text
+src/app/
+  core/           # models, HTTP services
+  features/       # politicians, rankings, comparison
+  shared/         # layout, pipes
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Related
 
-```bash
-ng generate --help
-```
+Backend API repository: **meupolitico-api** (Spring Boot + PostgreSQL).
 
-## Building
+## License / use
 
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Built for civic transparency and academic use (TCC).  
+Official data must respect Câmara dos Deputados and TSE open-data terms.
