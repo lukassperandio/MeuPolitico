@@ -1,33 +1,27 @@
 <section class="detail">
 
   @if (loading) {
-    <p>Carregando...</p>
+  <p>Carregando...</p>
   }
 
   @if (error) {
-    <p class="error">{{ error }}</p>
+  <p class="error">{{ error }}</p>
   }
-
   @if (!loading && politician; as p) {
-    <div class="hero">
-      <a routerLink="/politicians" style="color:#cfe6ff;font-size:0.85rem;font-weight:600;">← Voltar</a>
-      <div class="profile-id">
-        @if (p.photoUrl) {
-          <img [src]="p.photoUrl" [alt]="p.name" />
-        }
-        <div>
-          <h1>{{ p.name }}</h1>
-          <p>{{ p.position }}</p>
-          <div class="tags">
-            <span class="ptag">{{ p.party }}</span>
-            <span class="ptag">{{ p.state }}</span>
-          </div>
-          @if (p.status) {
-            <p style="margin-top:0.4rem;font-size:0.8rem;color:#cfe6ff;">Status: {{ p.status }}</p>
-          }
-        </div>
-      </div>
+  <a routerLink="/politicians" class="back">← Voltar</a>
+
+  <header class="profile-head">
+    @if (p.photoUrl) {
+    <img [src]="p.photoUrl" [alt]="p.name" />
+    }
+    <div>
+      <h1>{{ p.name }}</h1>
+      <p class="meta">{{ p.position }} · {{ p.party }} · {{ p.state }}</p>
+      @if (p.status) {
+      <p class="meta">{{ p.status }}</p>
+      }
     </div>
+  </header>
 
   <!-- ASSIDUIDADE -->
   <section class="block">
@@ -103,26 +97,28 @@
     @if (expenses.length === 0 && !expensesLoading) {
     <p>Nenhuma despesa encontrada com estes filtros.</p>
     } @else {
-    <table>
-      <thead>
-        <tr>
-          <th>Data</th>
-          <th>Categoria</th>
-          <th>Fornecedor</th>
-          <th>Valor</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (e of expenses; track e.id) {
-        <tr>
-          <td>{{ e.date | date: 'dd/MM/yyyy' }}</td>
-          <td>{{ e.category | expenseCategoryLabel }}</td>
-          <td>{{ e.supplier || '—' }}</td>
-          <td class="amount">{{ e.amount | currency: 'BRL' }}</td>
-        </tr>
-        }
-      </tbody>
-    </table>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Categoria</th>
+            <th>Fornecedor</th>
+            <th>Valor</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (e of expenses; track e.id) {
+          <tr>
+            <td>{{ e.date | date: 'dd/MM/yyyy' }}</td>
+            <td>{{ e.category | expenseCategoryLabel }}</td>
+            <td>{{ e.supplier || '—' }}</td>
+            <td class="amount">{{ e.amount | currency: 'BRL' }}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
 
     @if (hasMore) {
     <button type="button" class="load-more" [disabled]="expensesLoading" (click)="loadMore()">
@@ -132,4 +128,3 @@
     }
   </section>
   }
-</section>

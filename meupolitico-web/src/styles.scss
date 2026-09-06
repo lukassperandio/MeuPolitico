@@ -1,19 +1,28 @@
 :root {
-  --blue-deep: #0b3d62;
-  --blue-mid: #175788;
-  --blue-pale: #e8f0f7;
-  --green: #0f9b6c;
-  --green-soft: #e3f6ed;
-  --yellow: #ffc53d;
-  --yellow-soft: #fff6de;
-  --ink: #10201b;
-  --muted: #5c6b67;
-  --bg: #f3f6f5;
+  // Paleta institucional — inspirada no padrão visual do gov.br,
+  // sem usar a marca/logo oficial.
+  --gov-blue: #1351b4;
+  --gov-blue-dark: #0c3e8f;
+  --gov-blue-pale: #eaf0fb;
+  --gov-yellow: #ffcd07;
+  --gov-green: #168821;
+  --gov-red: #b3231c;
+  --ink: #1c1c1c;
+  --muted: #555555;
+  --bg: #ffffff;
+  --bg-soft: #f8f8f8;
   --card: #ffffff;
-  --border: #e2e8e5;
-  --red: #d64545;
-  --radius: 16px;
-  --shadow: 0 2px 12px rgba(11, 61, 98, 0.06);
+  --border: #e0e0e0;
+  --radius: 6px;
+  --shadow: none;
+
+  // aliases mantidos por compatibilidade com componentes existentes
+  --blue-deep: var(--gov-blue-dark);
+  --blue-mid: var(--gov-blue);
+  --blue-pale: var(--gov-blue-pale);
+  --green: var(--gov-green);
+  --yellow: var(--gov-yellow);
+  --red: var(--gov-red);
 }
 
 *,
@@ -26,19 +35,17 @@ body {
   margin: 0;
   font-family: 'Inter', system-ui, sans-serif;
   color: var(--ink);
-  background:
-    radial-gradient(1100px 500px at 15% -10%, #eaf3ff 0%, transparent 60%),
-    radial-gradient(900px 500px at 100% 0%, #e7f8ef 0%, transparent 55%),
-    var(--bg);
+  background: var(--bg);
   min-height: 100vh;
 }
 
 h1,
 h2,
 h3 {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 700;
   letter-spacing: -0.01em;
-  color: var(--blue-deep);
+  color: var(--gov-blue-dark);
 }
 
 a {
@@ -49,57 +56,67 @@ a {
 .page {
   max-width: 960px;
   margin: 0 auto;
-  padding: 1.25rem 1rem 3rem;
+  padding: 2rem 1rem 3rem;
 }
 
 .note {
   font-size: 0.875rem;
   color: var(--muted);
-  background: var(--blue-pale);
-  border-left: 3px solid var(--blue-mid);
+  background: var(--gov-blue-pale);
+  border-left: 3px solid var(--gov-blue);
   padding: 0.75rem 1rem;
-  border-radius: 10px;
+  border-radius: 6px;
   line-height: 1.45;
 }
 
 .party-tag {
-  font-family: 'IBM Plex Mono', monospace;
   font-size: 0.7rem;
-  font-weight: 600;
-  padding: 0.15rem 0.45rem;
-  border-radius: 6px;
-  background: var(--blue-pale);
-  color: var(--blue-mid);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: var(--gov-blue-pale);
+  color: var(--gov-blue-dark);
 }
 
 .source-chip {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.65rem;
-  font-weight: 600;
-  color: var(--blue-mid);
-  background: var(--blue-pale);
-  padding: 0.2rem 0.45rem;
-  border-radius: 6px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--gov-blue-dark);
+  background: var(--gov-blue-pale);
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
 }
 
 .btn {
   font-family: 'Inter', sans-serif;
   font-weight: 600;
   font-size: 0.9rem;
-  padding: 0.55rem 1rem;
-  border-radius: 10px;
-  border: none;
+  padding: 0.6rem 1.1rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--gov-blue);
   cursor: pointer;
-  background: var(--blue-deep);
+  background: var(--gov-blue);
   color: #fff;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background: var(--gov-blue-dark);
+    border-color: var(--gov-blue-dark);
+  }
 
   &.secondary {
-    background: var(--card);
-    color: var(--blue-deep);
-    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--gov-blue);
+
+    &:hover {
+      background: var(--gov-blue-pale);
+    }
   }
 
   &:disabled {
@@ -112,14 +129,14 @@ input,
 select {
   font-family: 'Inter', sans-serif;
   font-size: 0.9rem;
-  padding: 0.55rem 0.75rem;
+  padding: 0.6rem 0.8rem;
   border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--card);
+  border-radius: 8px;
+  background: #fff;
   color: var(--ink);
 
   &:focus {
-    outline: 2px solid rgba(15, 155, 108, 0.35);
-    border-color: var(--green);
+    outline: 2px solid var(--gov-blue);
+    outline-offset: -2px;
   }
 }

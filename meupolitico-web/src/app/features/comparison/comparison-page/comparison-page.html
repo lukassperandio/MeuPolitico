@@ -1,37 +1,98 @@
-<section class="page">
-  <h1>Comparar</h1>
-  <p class="hint">IDs internos dos políticos, separados por vírgula (1 a 3).</p>
+<section class="compare-page">
 
-  <div class="form">
-    <input type="text" [formControl]="idsControl" placeholder="1,2,3" />
-    <button type="button" (click)="compare()">Comparar</button>
+  <div class="page-head">
+    <h1>Comparar políticos</h1>
+    <p class="subtitle">Consulte lado a lado dados oficiais de gastos, assiduidade e patrimônio.</p>
   </div>
 
-  @if (loading) { <p>Carregando...</p> }
-  @if (error) { <p class="error">{{ error }}</p> }
+  <div class="search-bar">
+    <input
+      type="text"
+      [formControl]="idsControl"
+      placeholder="IDs dos políticos, separados por vírgula (ex.: 1,2,3)" />
+    <button type="button" class="search-btn" (click)="compare()" aria-label="Comparar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+        <circle cx="11" cy="11" r="7"></circle>
+        <line x1="21" y1="21" x2="16.5" y2="16.5"></line>
+      </svg>
+    </button>
+  </div>
+
+  @if (loading) {
+    <p class="status">Carregando...</p>
+  }
+  @if (error) {
+    <p class="status error">{{ error }}</p>
+  }
+  @if (!loading && !error && politicians.length === 0) {
+    <p class="status">Informe até 3 IDs acima para começar a comparação.</p>
+  }
 
   @if (!loading && politicians.length) {
-  <div class="grid">
-    @for (p of politicians; track p.id) {
-    <article class="card">
-      <h2><a [routerLink]="['/politicians', p.id]">{{ p.name }}</a></h2>
-      <p>{{ p.party }} · {{ p.state }}</p>
-      <p>{{ p.position }}</p>
-      <ul>
-        <li>Gastos: <strong>{{ p.totalExpenses | currency: 'BRL' }}</strong></li>
-        <li>Assiduidade: <strong>{{ p.attendancePercentage | number: '1.1-1' }}%</strong></li>
-        <li>
-          Patrimônio:
-          <strong>
-            @if (p.latestAssetValue != null) {
-            {{ p.latestAssetValue | currency: 'BRL' }}
-            @if (p.assetYear) { ({{ p.assetYear }}) }
-            } @else { — }
-          </strong>
-        </li>
-      </ul>
-    </article>
-    }
-  </div>
+    <div class="results-grid">
+      @for (p of politicians; track p.id; let i = $index) {
+        <article class="result-card" [class]="'accent-' + (i % 3)">
+          <div class="accent-bar"></div>
+          <div class="card-body">
+            <h2><a [routerLink]="['/politicians', p.id]">{{ p.name }}</a></h2>
+            <div class="tags">
+              <span class="tag">{{ p.party }}</span>
+              <span class="tag">{{ p.state }}</span>
+            </div>
+            <p class="position">{{ p.position }}</p>
+
+            <dl class="stats">
+              <div class="stat-row">
+                <dt>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="1" x2="12" y2="23"></line>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                  </svg>
+                  Gastos
+                </dt>
+                <dd>{{ p.totalExpenses | currency: 'BRL' }}</dd>
+              </div>
+              <div class="stat-row">
+                <dt>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 11l3 3L22 4"></path>
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                  </svg>
+                  Assiduidade
+                </dt>
+                <dd>{{ p.attendancePercentage | number: '1.1-1' }}%</dd>
+              </div>
+              <div class="stat-row">
+                <dt>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="10" width="4" height="10"></rect>
+                    <rect x="10" y="4" width="4" height="16"></rect>
+                    <rect x="17" y="7" width="4" height="13"></rect>
+                  </svg>
+                  Patrimônio
+                </dt>
+                <dd>
+                  @if (p.latestAssetValue != null) {
+                    {{ p.latestAssetValue | currency: 'BRL' }}
+                    @if (p.assetYear) { <span class="year">({{ p.assetYear }})</span> }
+                  } @else {
+                    —
+                  }
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </article>
+      }
+    </div>
   }
+
+  <div class="source-note">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="16" x2="12" y2="12"></line>
+      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+    </svg>
+    Dados públicos oficiais — Câmara dos Deputados e TSE.
+  </div>
 </section>

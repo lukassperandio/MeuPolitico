@@ -14,6 +14,7 @@ import {
 } from 'rxjs';
 import { PoliticianService } from '../../../core/services/politician.service';
 import { Page, Politician } from '../../../core/models/politician.model';
+import { PartyColorPipe } from '../../../shared/pipes/party-color-pipe';
 
 interface ListState {
   loading: boolean;
@@ -24,7 +25,7 @@ interface ListState {
 @Component({
   selector: 'app-politician-list',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, PartyColorPipe],
   templateUrl: './politician-list.html',
   styleUrl: './politician-list.scss'
 })

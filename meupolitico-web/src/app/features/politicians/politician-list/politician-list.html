@@ -23,11 +23,11 @@
     @if (!state.loading && !state.error) {
       <div class="cards">
         @for (p of state.politicians; track p.id) {
-          <a class="pol-card" [routerLink]="['/politicians', p.id]">
+          <a class="pol-card" [routerLink]="['/politicians', p.id]" [style.borderLeftColor]="p.party | partyColor">
             @if (p.photoUrl) {
               <img class="avatar" [src]="p.photoUrl" [alt]="p.name" />
             } @else {
-              <div class="avatar placeholder">{{ p.name.charAt(0) }}</div>
+              <div class="avatar placeholder" [style.background]="p.party | partyColor">{{ p.name.charAt(0) }}</div>
             }
             <div class="info">
               <div class="n">{{ p.name }}</div>

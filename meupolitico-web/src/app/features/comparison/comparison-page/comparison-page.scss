@@ -1,57 +1,217 @@
-.page {
+$gov-blue: #1351b4;
+$gov-blue-dark: #0c3e8f;
+$gov-yellow: #ffcd07;
+$gov-green: #168821;
+$ink: #1c1c1c;
+$muted: #555;
+$border: #e0e0e0;
+$bg-soft: #f8f8f8;
+
+.compare-page {
   max-width: 960px;
-  margin: 1.5rem auto;
-  padding: 0 1rem;
+  margin: 0 auto;
+  padding: 2rem 1rem 3rem;
+  font-family: 'Inter', 'Rawline', system-ui, sans-serif;
+  color: $ink;
 }
 
-.hint {
-  color: #666;
-  font-size: 0.9rem;
+.page-head {
+  margin-bottom: 1.5rem;
+
+  h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: $gov-blue-dark;
+    margin: 0 0 0.35rem;
+  }
+
+  .subtitle {
+    color: $muted;
+    font-size: 0.95rem;
+    margin: 0;
+  }
 }
 
-.form {
+.search-bar {
   display: flex;
-  gap: 0.5rem;
-  margin: 1rem 0;
+  align-items: stretch;
+  background: $bg-soft;
+  border: 1px solid $border;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 1.75rem;
 
   input {
     flex: 1;
-    padding: 0.5rem 0.75rem;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-  }
-
-  button {
-    padding: 0.5rem 1rem;
     border: none;
-    border-radius: 6px;
-    background: #111;
+    background: transparent;
+    padding: 0.9rem 1.1rem;
+    font-size: 0.95rem;
+    color: $ink;
+
+    &:focus {
+      outline: 2px solid $gov-blue;
+      outline-offset: -2px;
+    }
+
+    &::placeholder {
+      color: #8a8a8a;
+    }
+  }
+
+  .search-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1.25rem;
+    background: $gov-blue;
     color: #fff;
+    border: none;
     cursor: pointer;
+    transition: background 0.15s ease;
+
+    &:hover {
+      background: $gov-blue-dark;
+    }
   }
 }
 
-.grid {
+.status {
+  color: $muted;
+  font-size: 0.95rem;
+
+  &.error {
+    color: #b3231c;
+    font-weight: 600;
+  }
+}
+
+.results-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+  margin: 1.5rem 0 2rem;
 }
 
-.card {
+.result-card {
   background: #fff;
-  border: 1px solid #eee;
-  border-radius: 8px;
-  padding: 1rem;
+  border: 1px solid $border;
+  border-radius: 6px;
+  overflow: hidden;
 
-  a {
-    color: inherit;
+  .accent-bar {
+    height: 4px;
+    background: $gov-blue;
   }
 
-  ul {
-    padding-left: 1.1rem;
+  &.accent-1 .accent-bar {
+    background: $gov-green;
+  }
+
+  &.accent-2 .accent-bar {
+    background: $gov-yellow;
+  }
+
+  .card-body {
+    padding: 1.25rem 1.35rem;
+  }
+
+  h2 {
+    margin: 0 0 0.6rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+
+    a {
+      color: $gov-blue-dark;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .tags {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.55rem;
+  }
+
+  .tag {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: $gov-blue-dark;
+    background: #eaf0fb;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+  }
+
+  .position {
+    color: $muted;
+    font-size: 0.85rem;
+    margin: 0 0 1rem;
   }
 }
 
-.error {
-  color: #b00020;
+.stats {
+  margin: 0;
+
+  .stat-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    padding: 0.6rem 0;
+    border-top: 1px solid $border;
+
+    &:first-child {
+      border-top: none;
+      padding-top: 0;
+    }
+  }
+
+  dt {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    color: $muted;
+    font-weight: 600;
+
+    svg {
+      color: $gov-blue;
+      flex-shrink: 0;
+    }
+  }
+
+  dd {
+    margin: 0;
+    font-weight: 700;
+    color: $ink;
+    text-align: right;
+
+    .year {
+      font-weight: 500;
+      color: $muted;
+      font-size: 0.75rem;
+    }
+  }
+}
+
+.source-note {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: $muted;
+  border-top: 1px solid $border;
+  padding-top: 1rem;
+
+  svg {
+    color: $gov-blue;
+    flex-shrink: 0;
+  }
 }

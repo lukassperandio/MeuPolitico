@@ -3,13 +3,14 @@ import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { RankingService } from '../../../core/services/ranking.service';
 import { RankingItem } from '../../../core/models/ranking.model';
+import { PartyColorPipe } from '../../../shared/pipes/party-color-pipe';
 
 type RankingType = 'expenses' | 'attendance' | 'assets';
 
 @Component({
   selector: 'app-ranking-page',
   standalone: true,
-  imports: [CommonModule, RouterLink, CurrencyPipe, DecimalPipe],
+  imports: [CommonModule, RouterLink, CurrencyPipe, DecimalPipe, PartyColorPipe],
   templateUrl: './ranking-page.html',
   styleUrl: './ranking-page.scss'
 })

@@ -36,7 +36,7 @@
   <ol class="ranking">
     @for (item of items; track item.politicianId) {
     <li>
-      <span class="pos">{{ item.position }}º</span>
+      <span class="pos" [style.background]="item.party | partyColor">{{ item.position }}º</span>
       <a [routerLink]="['/politicians', item.politicianId]">
         <strong>{{ item.politicianName }}</strong>
         <span class="meta">{{ item.party }} · {{ item.state }}</span>

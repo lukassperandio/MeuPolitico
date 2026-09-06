@@ -15,6 +15,7 @@ import { AssetEvolution } from '../../../core/models/asset.model';
 import { ExpenseCategoryLabelPipe } from '../../../shared/pipes/expense-category-label-pipe';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { PartyColorPipe } from '../../../shared/pipes/party-color-pipe';
 
 @Component({
   selector: 'app-politician-detail',
@@ -26,7 +27,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     CurrencyPipe,
     DatePipe,
     DecimalPipe,
-    ExpenseCategoryLabelPipe
+    ExpenseCategoryLabelPipe,
+    PartyColorPipe
   ],
   templateUrl: './politician-detail.html',
   styleUrl: './politician-detail.scss'
