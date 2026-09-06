@@ -5,6 +5,7 @@ import com.meupolitico.enums.ExpenseCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -44,4 +45,24 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long>,
     LIMIT 50
     """, nativeQuery = true)
     List<Object[]> findTopExpenseTotals();
+
+    @Query(value = """
+    SELECT COALESCE(SUM(e.amount), 0), COUNT(*)
+    FROM expense e
+    WHERE e.politician_id = :politicianId
+    """, nativeQuery = true)
+    Object[] sumAndCountByPoliticianId(@Param("politicianId") Long politicianId);
+
+    @Query(value = """
+    SELECT TO_CHAR(e.date, 'YYYY-MM') AS month,
+           COALESCE(SUM(e.amount), 0) AS total
+    FROM expense e
+    WHERE e.politician_id = :politicianId
+    GROUP BY TO_CHAR(e.date, 'YYYY-MM')
+    ORDER BY month
+    """, nativeQuery = true)
+    List<Object[]> sumByMonth(@Param("politicianId") Long politicianId);
+
+    @Query("select max(e.date) from Expense e where e.politician.id = :id")
+    Optional<LocalDate> findLastDate(@Param("id") Long id);
 }

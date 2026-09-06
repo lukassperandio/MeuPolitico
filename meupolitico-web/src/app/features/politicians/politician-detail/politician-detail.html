@@ -72,6 +72,31 @@
   <section class="expenses block">
     <h2>Gastos</h2>
 
+    @if (expenseTotal; as t) {
+    <p class="total-line">
+      <strong>Total no período importado:</strong>
+      {{ t.totalAmount | currency: 'BRL' }}
+      @if (t.lastExpenseDate) {
+      · atualizado até {{ t.lastExpenseDate | date: 'dd/MM/yyyy' }}
+      }
+      ({{ t.expenseCount }} despesas)
+    </p>
+    }
+
+    @if (monthlyBars.length) {
+    <div class="month-chart" aria-label="Gastos por mês">
+      @for (m of monthlyBars; track m.month) {
+      <div class="month-row">
+        <span class="m-label">{{ m.month }}</span>
+        <div class="m-track">
+          <div class="m-fill" [style.width.%]="m.pct"></div>
+        </div>
+        <span class="m-val">{{ m.total | currency: 'BRL':'symbol':'1.0-0' }}</span>
+      </div>
+      }
+    </div>
+    }
+
     <form class="filters" [formGroup]="filterForm" (ngSubmit)="applyFilters()">
       <input type="text" formControlName="supplier" placeholder="Fornecedor / empresa" />
       <input type="date" formControlName="startDate" title="Data inicial" />

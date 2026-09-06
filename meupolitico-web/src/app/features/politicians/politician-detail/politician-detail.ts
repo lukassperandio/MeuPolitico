@@ -55,6 +55,15 @@ export class PoliticianDetailComponent implements OnInit {
   readonly pageSize = 20;
   totalElements = 0;
 
+  expenseTotal: {
+    politicianId: number;
+    totalAmount: number;
+    expenseCount: number;
+    lastExpenseDate: string | null;
+  } | null = null;
+
+  monthlyBars: { month: string; total: number; pct: number }[] = [];
+
   readonly filterForm = new FormGroup({
     supplier: new FormControl('', { nonNullable: true }),
     startDate: new FormControl('', { nonNullable: true }),
@@ -105,25 +114,23 @@ export class PoliticianDetailComponent implements OnInit {
         sort: this.filterForm.controls.sort.value
       }),
       attendance: this.attendanceService.getSummary(id).pipe(catchError(() => of(null))),
-      assets: this.assetService.getEvolution(id).pipe(catchError(() => of(null)))
+      assets: this.assetService.getEvolution(id).pipe(catchError(() => of(null))),
+      total: this.expenseService.getTotal(id).pipe(catchError(() => of(null))),
+      monthly: this.expenseService.getMonthly(id).pipe(catchError(() => of(null)))
     }).subscribe({
-      next: ({ politician, expenses, attendance, assets }) => {
+      next: ({ politician, expenses, attendance, assets, total, monthly }) => {
         this.politician = politician;
         this.expenses = expenses.content ?? [];
         this.totalElements = expenses.totalElements ?? 0;
         this.page = 0;
         this.attendanceSummary = attendance;
         this.assetEvolution = assets;
+        this.expenseTotal = total;
+        this.monthlyBars = this.toMonthlyBars(monthly);
         this.loading = false;
         this.cdr.markForCheck();
         this.setupLiveFilters();
       },
-      error: (err) => {
-        console.error(err);
-        this.error = 'Não foi possível carregar o perfil.';
-        this.loading = false;
-        this.cdr.markForCheck();
-      }
     });
   }
 
@@ -226,5 +233,19 @@ export class PoliticianDetailComponent implements OnInit {
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(() => this.applyFilters());
+  }
+
+  private toMonthlyBars(
+    monthly: { months: { month: string; total: number }[] } | null
+  ): { month: string; total: number; pct: number }[] {
+    if (!monthly?.months?.length) {
+      return [];
+    }
+    const max = Math.max(...monthly.months.map((m) => Number(m.total) || 0), 1);
+    return monthly.months.map((m) => ({
+      month: m.month,
+      total: Number(m.total) || 0,
+      pct: ((Number(m.total) || 0) / max) * 100
+    }));
   }
 }

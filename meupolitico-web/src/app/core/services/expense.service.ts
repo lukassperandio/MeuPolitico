@@ -44,4 +44,20 @@ export class ExpenseService {
 
     return this.http.get<Page<Expense>>(`${this.baseUrl}/search`, { params: httpParams });
   }
+
+  getTotal(politicianId: number) {
+    return this.http.get<{
+      politicianId: number;
+      totalAmount: number;
+      expenseCount: number;
+      lastExpenseDate: string | null;
+    }>(`${this.baseUrl}/politician/${politicianId}/total`);
+  }
+
+  getMonthly(politicianId: number) {
+    return this.http.get<{
+      politicianId: number;
+      months: { month: string; total: number }[];
+    }>(`${this.baseUrl}/politician/${politicianId}/monthly`);
+  }
 }

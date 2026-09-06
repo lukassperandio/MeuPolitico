@@ -1,7 +1,10 @@
 package com.meupolitico.service;
 
 import com.meupolitico.dto.request.ExpenseRequest;
+import com.meupolitico.dto.response.ExpenseMonthTotal;
+import com.meupolitico.dto.response.ExpenseMonthlyResponse;
 import com.meupolitico.dto.response.ExpenseResponse;
+import com.meupolitico.dto.response.ExpenseTotalResponse;
 import com.meupolitico.entity.Expense;
 import com.meupolitico.entity.Politician;
 import com.meupolitico.enums.ExpenseCategory;
@@ -16,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -136,5 +140,47 @@ public class ExpenseService {
             throw new ResourceNotFoundException("Expense not found with id: " + id);
         }
         expenseRepository.deleteById(id);
+    }
+
+    public ExpenseTotalResponse totalByPolitician(Long id) {
+        if (!politicianRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Politician not found with id: " + id);
+        }
+
+        Object[] row = expenseRepository.sumAndCountByPoliticianId(id);
+
+        BigDecimal total = BigDecimal.ZERO;
+        long count = 0L;
+        if (row != null) {
+            if (row[0] != null) {
+                total = new BigDecimal(row[0].toString());
+            }
+            if (row[1] != null) {
+                count = ((Number) row[1]).longValue();
+            }
+        }
+
+        LocalDate last = expenseRepository.findLastDate(id).orElse(null);
+
+        return new ExpenseTotalResponse(id, total, count, last);
+    }
+
+    public ExpenseMonthlyResponse monthlyByPolitician(Long id) {
+        if (!politicianRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Politician not found with id: " + id);
+        }
+
+        List<Object[]> rows = expenseRepository.sumByMonth(id);
+        List<ExpenseMonthTotal> months = new ArrayList<>();
+
+        for (Object[] row : rows) {
+            String month = row[0] != null ? row[0].toString() : "";
+            BigDecimal total = row[1] != null
+                    ? new BigDecimal(row[1].toString())
+                    : BigDecimal.ZERO;
+            months.add(new ExpenseMonthTotal(month, total));
+        }
+
+        return new ExpenseMonthlyResponse(id, months);
     }
 }
