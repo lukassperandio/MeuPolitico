@@ -49,10 +49,19 @@
     <button type="button" class="secondary" [disabled]="state.page === 0" (click)="prev(state.page)">
       Anterior
     </button>
-    <span>
-      Página {{ state.page + 1 }} de {{ state.totalPages }}
-      ({{ state.totalElements }})
-    </span>
+
+    <label class="page-jump">
+      Página
+      <select [value]="state.page" (change)="goToPage($event)">
+        @for (p of pageNumbers(state.totalPages); track p) {
+        <option [value]="p" [selected]="p === state.page">
+          {{ p + 1 }}
+        </option>
+        }
+      </select>
+      de {{ state.totalPages }} ({{ state.totalElements }})
+    </label>
+
     <button type="button" class="secondary" [disabled]="state.page + 1 >= state.totalPages"
       (click)="next(state.page, state.totalPages)">
       Seguinte

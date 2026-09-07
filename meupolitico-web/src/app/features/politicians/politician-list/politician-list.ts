@@ -120,6 +120,14 @@ export class PoliticianListComponent {
     }
   }
 
-  onSearchTyped(): void {
+  pageNumbers(totalPages: number): number[] {
+    return Array.from({ length: totalPages }, (_, i) => i);
+  }
+
+  goToPage(event: Event): void {
+    const value = Number((event.target as HTMLSelectElement).value);
+    if (!Number.isNaN(value)) {
+      this.page$.next(value);
+    }
   }
 }
