@@ -10,12 +10,14 @@ export class PoliticianService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = '/api/politicians';
 
-  findAll(page = 0, size = 20): Observable<Page<Politician>> {
-    const params = new HttpParams()
+  findAll(page = 0, size = 20, name?: string): Observable<Page<Politician>> {
+    let params = new HttpParams()
       .set('page', page)
       .set('size', size);
-
-    return this.http.get<Page<Politician>>(this.baseUrl, { params });
+    if (name?.trim()) {
+      params = params.set('name', name.trim());
+    }
+    return this.http.get<Page<Politician>>('/api/politicians', { params });
   }
 
   findById(id: number): Observable<Politician> {

@@ -84,3 +84,40 @@
     color: var(--gov-red);
   }
 }
+
+.pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.9rem;
+  color: var(--muted);
+
+  button {
+    padding: 0.45rem 0.9rem;
+    border-radius: 4px;
+    border: 1px solid var(--gov-blue);
+    background: #fff;
+    color: var(--gov-blue);
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      background: var(--gov-blue-pale);
+    }
+
+    &:disabled {
+      opacity: 0.45;
+      cursor: default;
+    }
+  }
+
+  span {
+    font-variant-numeric: tabular-nums;
+  }
+}
