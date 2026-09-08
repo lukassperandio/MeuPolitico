@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -88,45 +89,6 @@ public class RankingService {
                     politician.getPosition(),
                     total,
                     null
-            ));
-        }
-
-        return ranking;
-    }
-
-    public List<RankingItemResponse> rankByAttendance(String state,
-                                                      String party,
-                                                      String position,
-                                                      LocalDate startDate,
-                                                      LocalDate endDate) {
-        List<Object[]> rows = attendanceRepository.findTopAttendancePercentages();
-        List<RankingItemResponse> ranking = new ArrayList<>();
-        int pos = 1;
-
-        for (Object[] row : rows) {
-            Long politicianId = ((Number) row[0]).longValue();
-            double total = row[1] != null ? ((Number) row[1]).doubleValue() : 0;
-            double present = row[2] != null ? ((Number) row[2]).doubleValue() : 0;
-            double percentage = total == 0 ? 0 : Math.round((present * 10000.0) / total) / 100.0;
-
-            if (percentage <= 0) {
-                continue;
-            }
-
-            Politician politician = politicianRepository.findById(politicianId).orElse(null);
-            if (politician == null || !matchesFilters(politician, state, party, position)) {
-                continue;
-            }
-
-            ranking.add(new RankingItemResponse(
-                    pos++,
-                    politician.getId(),
-                    politician.getName(),
-                    politician.getParty(),
-                    politician.getState(),
-                    politician.getPosition(),
-                    BigDecimal.valueOf(percentage),
-                    total
             ));
         }
 
@@ -240,5 +202,84 @@ public class RankingService {
             ));
         }
         return result;
+    }
+
+    public List<RankingItemResponse> rankByAttendance(
+            String state,
+            String party,
+            String position,
+            LocalDate startDate,
+            LocalDate endDate
+    ) {
+        long totalSessions;
+        if (startDate != null || endDate != null) {
+            totalSessions = attendanceRepository.countDistinctEventsBetween(startDate, endDate);
+        } else {
+            totalSessions = attendanceRepository.countDistinctEvents();
+        }
+
+        if (totalSessions <= 0) {
+            return List.of();
+        }
+
+        List<Object[]> rows = attendanceRepository.countPresentGroupedByPolitician();
+        List<RankingItemResponse> items = new ArrayList<>();
+
+        for (Object[] row : rows) {
+            Long politicianId = ((Number) row[0]).longValue();
+            long present = ((Number) row[1]).longValue();
+
+            Politician p = politicianRepository.findById(politicianId).orElse(null);
+            if (p == null) {
+                continue;
+            }
+            if (state != null && !state.isBlank()
+                    && (p.getState() == null || !p.getState().equalsIgnoreCase(state.trim()))) {
+                continue;
+            }
+            if (party != null && !party.isBlank()
+                    && (p.getParty() == null || !p.getParty().equalsIgnoreCase(party.trim()))) {
+                continue;
+            }
+            if (position != null && !position.isBlank()
+                    && (p.getPosition() == null || !p.getPosition().equalsIgnoreCase(position.trim()))) {
+                continue;
+            }
+
+            BigDecimal rate = BigDecimal.valueOf(present * 100.0 / totalSessions)
+                    .setScale(2, RoundingMode.HALF_UP);
+
+            items.add(new RankingItemResponse(
+                    0,
+                    p.getId(),
+                    p.getName(),
+                    p.getParty(),
+                    p.getState(),
+                    p.getPosition(),
+                    rate,
+                    (double) present
+            ));
+        }
+
+        items.sort(Comparator.comparing(RankingItemResponse::value).reversed());
+
+        int limit = Math.min(50, items.size());
+        List<RankingItemResponse> top = new ArrayList<>(items.subList(0, limit));
+
+        for (int i = 0; i < top.size(); i++) {
+            RankingItemResponse r = top.get(i);
+            top.set(i, new RankingItemResponse(
+                    i + 1,
+                    r.politicianId(),
+                    r.politicianName(),
+                    r.party(),
+                    r.state(),
+                    r.positionTitle(),
+                    r.value(),
+                    r.secondaryValue()
+            ));
+        }
+
+        return top;
     }
 }

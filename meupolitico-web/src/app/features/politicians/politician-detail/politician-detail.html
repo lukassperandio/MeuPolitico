@@ -30,13 +30,16 @@
       Fonte: presenças registadas em eventos da Câmara. O ficheiro oficial lista quem esteve presente
       (não publica lista completa de faltas).
     </p>
-    @if (presenceCount > 0) {
+    @if (presenceCount > 0 && attendanceSummary; as s) {
     <p>
-      <strong>{{ presenceCount }}</strong> presenças registadas
-      @if (attendanceSummary?.attendancePercentage != null) {
-      · {{ attendanceSummary!.attendancePercentage | number: '1.0-1' }}%
-      (quando o total de sessões está disponível)
+      <strong>{{ s.present ?? presenceCount }}</strong> presenças
+      em <strong>{{ s.totalSessions }}</strong> eventos registados
+      @if (s.attendancePercentage != null) {
+      ({{ s.attendancePercentage | number: '1.0-1' }}%)
       }
+    </p>
+    <p class="hint">
+      % = presenças ÷ total de eventos distintos no ficheiro da Câmara.
     </p>
     } @else {
     <p>Sem dados de presença para este político.</p>

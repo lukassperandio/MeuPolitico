@@ -5,6 +5,7 @@ import com.meupolitico.enums.AttendanceStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -40,4 +41,45 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long>,
 
     @Query("select a.externalId from Attendance a where a.externalId is not null")
     List<String> findAllExternalIds();
+
+    @Query(value = """
+    SELECT COUNT(*) FROM (
+        SELECT DISTINCT a.date, a.session_type
+        FROM attendance a
+    ) s
+    """, nativeQuery = true)
+    long countDistinctEvents();
+
+    @Query(value = """
+    SELECT a.politician_id,
+           COUNT(*) AS present_count
+    FROM (
+        SELECT DISTINCT politician_id, date, session_type
+        FROM attendance
+        WHERE status = 'PRESENT'
+    ) a
+    GROUP BY a.politician_id
+    """, nativeQuery = true)
+    List<Object[]> countPresentGroupedByPolitician();
+
+    @Query(value = """
+    SELECT COUNT(*) FROM (
+        SELECT DISTINCT a.date, a.session_type
+        FROM attendance a
+        WHERE (CAST(:start AS date) IS NULL OR a.date >= CAST(:start AS date))
+          AND (CAST(:end AS date) IS NULL OR a.date <= CAST(:end AS date))
+    ) s
+    """, nativeQuery = true)
+    long countDistinctEventsBetween(@Param("start") LocalDate start,
+                                    @Param("end") LocalDate end);
+
+    @Query(value = """
+    SELECT COUNT(*) FROM (
+        SELECT DISTINCT date, session_type
+        FROM attendance
+        WHERE politician_id = :politicianId
+          AND status = 'PRESENT'
+    ) s
+    """, nativeQuery = true)
+    long countDistinctPresentSessions(@Param("politicianId") Long politicianId);
 }

@@ -23,8 +23,8 @@
 
   @if (type === 'attendance') {
   <p class="note">
-    Assiduidade com base em presenças registadas em eventos da Câmara
-    (o ficheiro oficial não lista todas as faltas).
+    % = presenças ÷ total de eventos distintos no ficheiro da Câmara
+    (não é lista completa de faltas).
   </p>
   }
 
@@ -46,6 +46,7 @@
         {{ item.value | currency: 'BRL' }}
         } @else {
         {{ item.value | number: '1.1-1' }}%
+        · {{ item.secondaryValue | number: '1.0-0' }} presenças
         }
       </span>
     </li>

@@ -94,35 +94,6 @@ public class AttendanceService {
                 .map(attendanceMapper::toResponse);
     }
 
-    public AttendanceSummaryResponse getSummary(Long politicianId, LocalDate startDate, LocalDate endDate) {
-        Politician politician = politicianRepository.findById(politicianId)
-                .orElseThrow(() -> new ResourceNotFoundException("Politician not found with id: " + politicianId));
-
-        List<Attendance> records;
-        if (startDate != null && endDate != null) {
-            records = attendanceRepository.findByPoliticianIdAndDateBetween(politicianId, startDate, endDate);
-        } else {
-            records = attendanceRepository.findByPoliticianId(politicianId);
-        }
-
-        long total = records.size();
-        long present = records.stream().filter(a -> a.getStatus() == AttendanceStatus.PRESENT).count();
-        long absent = records.stream().filter(a -> a.getStatus() == AttendanceStatus.ABSENT).count();
-        long justified = records.stream().filter(a -> a.getStatus() == AttendanceStatus.JUSTIFIED).count();
-
-        double percentage = total == 0 ? 0.0 : (present * 100.0) / total;
-
-        return new AttendanceSummaryResponse(
-                politician.getId(),
-                politician.getName(),
-                total,
-                present,
-                absent,
-                justified,
-                Math.round(percentage * 100.0) / 100.0
-        );
-    }
-
     @Transactional
     public AttendanceResponse create(AttendanceRequest request) {
         Politician politician = politicianRepository.findById(request.politicianId())
@@ -158,5 +129,36 @@ public class AttendanceService {
             throw new ResourceNotFoundException("Attendance not found with id: " + id);
         }
         attendanceRepository.deleteById(id);
+    }
+
+    public AttendanceSummaryResponse getSummary(Long politicianId,
+                                                LocalDate startDate,
+                                                LocalDate endDate) {
+        if (!politicianRepository.existsById(politicianId)) {
+            throw new ResourceNotFoundException("Politician not found with id: " + politicianId);
+        }
+
+        long totalSessions;
+        if (startDate != null || endDate != null) {
+            totalSessions = attendanceRepository.countDistinctEventsBetween(startDate, endDate);
+        } else {
+            totalSessions = attendanceRepository.countDistinctEvents();
+        }
+
+        long present = attendanceRepository.countDistinctPresentSessions(politicianId);
+
+        double percentage = totalSessions == 0 ? 0.0 : (present * 100.0) / totalSessions;
+
+        String name = politicianRepository.findById(politicianId)
+                .map(Politician::getName)
+                .orElse(null);
+
+        return new AttendanceSummaryResponse(
+                politicianId,
+                name,
+                totalSessions,
+                present,
+                percentage
+        );
     }
 }
