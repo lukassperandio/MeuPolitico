@@ -31,7 +31,7 @@ public class RankingService {
     private final AttendanceRepository attendanceRepository;
     private final AssetRepository assetRepository;
 
-    private static final int TOP_LIMIT = 50;
+    private static final int TOP_LIMIT = Integer.MAX_VALUE;
 
     public RankingService(PoliticianRepository politicianRepository,
                           ExpenseRepository expenseRepository,
@@ -41,117 +41,6 @@ public class RankingService {
         this.expenseRepository = expenseRepository;
         this.attendanceRepository = attendanceRepository;
         this.assetRepository = assetRepository;
-    }
-
-    public List<RankingItemResponse> rankByExpenses(String state,
-                                                    String party,
-                                                    String position,
-                                                    LocalDate startDate,
-                                                    LocalDate endDate) {
-        List<Object[]> rows = expenseRepository.findTopExpenseTotals();
-
-        List<RankingItemResponse> ranking = new ArrayList<>();
-        int positionIndex = 1;
-
-        for (Object[] row : rows) {
-            Long politicianId = ((Number) row[0]).longValue();
-            BigDecimal total = row[1] != null
-                    ? new BigDecimal(row[1].toString())
-                    : BigDecimal.ZERO;
-
-            Politician politician = politicianRepository.findById(politicianId).orElse(null);
-            if (politician == null) {
-                continue;
-            }
-
-            if (state != null && !state.isBlank()
-                    && (politician.getState() == null
-                    || !politician.getState().equalsIgnoreCase(state))) {
-                continue;
-            }
-            if (party != null && !party.isBlank()
-                    && (politician.getParty() == null
-                    || !politician.getParty().equalsIgnoreCase(party))) {
-                continue;
-            }
-            if (position != null && !position.isBlank()
-                    && (politician.getPosition() == null
-                    || !politician.getPosition().toLowerCase().contains(position.toLowerCase()))) {
-                continue;
-            }
-
-            ranking.add(new RankingItemResponse(
-                    positionIndex++,
-                    politician.getId(),
-                    politician.getName(),
-                    politician.getParty(),
-                    politician.getState(),
-                    politician.getPosition(),
-                    total,
-                    null
-            ));
-        }
-
-        return ranking;
-    }
-
-    public List<RankingItemResponse> rankByAssets(String state,
-                                                  String party,
-                                                  String position,
-                                                  Integer year) {
-        List<Object[]> rows = assetRepository.findLatestAssetsByPolitician();
-
-        List<RankingItemResponse> ranking = new ArrayList<>();
-
-        for (Object[] row : rows) {
-            Long politicianId = ((Number) row[0]).longValue();
-            BigDecimal value = row[1] != null ? new BigDecimal(row[1].toString()) : BigDecimal.ZERO;
-            Integer assetYear = row[2] != null ? ((Number) row[2]).intValue() : null;
-
-            if (year != null && assetYear != null && !assetYear.equals(year)) {
-                continue;
-            }
-            if (value.compareTo(BigDecimal.ZERO) <= 0) {
-                continue;
-            }
-
-            Politician politician = politicianRepository.findById(politicianId).orElse(null);
-            if (politician == null || !matchesFilters(politician, state, party, position)) {
-                continue;
-            }
-
-            ranking.add(new RankingItemResponse(
-                    0,
-                    politician.getId(),
-                    politician.getName(),
-                    politician.getParty(),
-                    politician.getState(),
-                    politician.getPosition(),
-                    value,
-                    assetYear != null ? assetYear.doubleValue() : null
-            ));
-        }
-
-        ranking.sort(Comparator.comparing(RankingItemResponse::value).reversed());
-
-        List<RankingItemResponse> top = new ArrayList<>();
-        int pos = 1;
-        for (RankingItemResponse item : ranking) {
-            if (pos > 50) {
-                break;
-            }
-            top.add(new RankingItemResponse(
-                    pos++,
-                    item.politicianId(),
-                    item.politicianName(),
-                    item.party(),
-                    item.state(),
-                    item.positionTitle(),
-                    item.value(),
-                    item.secondaryValue()
-            ));
-        }
-        return top;
     }
 
     private boolean matchesFilters(Politician politician, String state, String party, String position) {
@@ -183,34 +72,54 @@ public class RankingService {
                 .collect(Collectors.toList());
     }
 
-    private List<RankingItemResponse> assignPositions(List<RankingItemResponse> ranking) {
-        List<RankingItemResponse> result = new ArrayList<>();
-        int position = 1;
-        int limit = Math.min(TOP_LIMIT, ranking.size());
+    public List<RankingItemResponse> rankByExpenses(String state,
+                                                    String party,
+                                                    String position,
+                                                    String name,
+                                                    LocalDate startDate,
+                                                    LocalDate endDate,
+                                                    String order) {
+        // startDate/endDate: ainda não entram no SQL de findTopExpenseTotals
+        // (filtro de período nos gastos = evolução futura da query)
+        List<Object[]> rows = expenseRepository.findTopExpenseTotals();
+        List<RankingItemResponse> ranking = new ArrayList<>();
 
-        for (int i = 0; i < limit; i++) {
-            RankingItemResponse item = ranking.get(i);
-            result.add(new RankingItemResponse(
-                    position++,
-                    item.politicianId(),
-                    item.politicianName(),
-                    item.party(),
-                    item.state(),
-                    item.positionTitle(),
-                    item.value(),
-                    item.secondaryValue()
+        for (Object[] row : rows) {
+            Long politicianId = ((Number) row[0]).longValue();
+            BigDecimal total = row[1] != null
+                    ? new BigDecimal(row[1].toString())
+                    : BigDecimal.ZERO;
+
+            Politician politician = politicianRepository.findById(politicianId).orElse(null);
+            if (politician == null) {
+                continue;
+            }
+            if (!matchesFilters(politician, state, party, position, name)) {
+                continue;
+            }
+
+            ranking.add(new RankingItemResponse(
+                    0,
+                    politician.getId(),
+                    politician.getName(),
+                    politician.getParty(),
+                    politician.getState(),
+                    politician.getPosition(),
+                    total,
+                    null
             ));
         }
-        return result;
+
+        return finalizeRanking(ranking, order);
     }
 
-    public List<RankingItemResponse> rankByAttendance(
-            String state,
-            String party,
-            String position,
-            LocalDate startDate,
-            LocalDate endDate
-    ) {
+    public List<RankingItemResponse> rankByAttendance(String state,
+                                                      String party,
+                                                      String position,
+                                                      String name,
+                                                      LocalDate startDate,
+                                                      LocalDate endDate,
+                                                      String order) {
         long totalSessions;
         if (startDate != null || endDate != null) {
             totalSessions = attendanceRepository.countDistinctEventsBetween(startDate, endDate);
@@ -233,16 +142,7 @@ public class RankingService {
             if (p == null) {
                 continue;
             }
-            if (state != null && !state.isBlank()
-                    && (p.getState() == null || !p.getState().equalsIgnoreCase(state.trim()))) {
-                continue;
-            }
-            if (party != null && !party.isBlank()
-                    && (p.getParty() == null || !p.getParty().equalsIgnoreCase(party.trim()))) {
-                continue;
-            }
-            if (position != null && !position.isBlank()
-                    && (p.getPosition() == null || !p.getPosition().equalsIgnoreCase(position.trim()))) {
+            if (!matchesFilters(p, state, party, position, name)) {
                 continue;
             }
 
@@ -261,25 +161,99 @@ public class RankingService {
             ));
         }
 
-        items.sort(Comparator.comparing(RankingItemResponse::value).reversed());
+        return finalizeRanking(items, order);
+    }
 
-        int limit = Math.min(50, items.size());
-        List<RankingItemResponse> top = new ArrayList<>(items.subList(0, limit));
+    public List<RankingItemResponse> rankByAssets(String state,
+                                                  String party,
+                                                  String position,
+                                                  String name,
+                                                  Integer year,
+                                                  String order) {
+        List<Object[]> rows = assetRepository.findLatestAssetsByPolitician();
+        List<RankingItemResponse> ranking = new ArrayList<>();
 
-        for (int i = 0; i < top.size(); i++) {
-            RankingItemResponse r = top.get(i);
-            top.set(i, new RankingItemResponse(
-                    i + 1,
-                    r.politicianId(),
-                    r.politicianName(),
-                    r.party(),
-                    r.state(),
-                    r.positionTitle(),
-                    r.value(),
-                    r.secondaryValue()
+        for (Object[] row : rows) {
+            Long politicianId = ((Number) row[0]).longValue();
+            BigDecimal value = row[1] != null ? new BigDecimal(row[1].toString()) : BigDecimal.ZERO;
+            Integer assetYear = row[2] != null ? ((Number) row[2]).intValue() : null;
+
+            if (year != null && assetYear != null && !assetYear.equals(year)) {
+                continue;
+            }
+            if (value.compareTo(BigDecimal.ZERO) <= 0) {
+                continue;
+            }
+
+            Politician politician = politicianRepository.findById(politicianId).orElse(null);
+            if (politician == null || !matchesFilters(politician, state, party, position, name)) {
+                continue;
+            }
+
+            ranking.add(new RankingItemResponse(
+                    0,
+                    politician.getId(),
+                    politician.getName(),
+                    politician.getParty(),
+                    politician.getState(),
+                    politician.getPosition(),
+                    value,
+                    assetYear != null ? assetYear.doubleValue() : null
             ));
         }
 
-        return top;
+        return finalizeRanking(ranking, order);
+    }
+
+    private boolean matchesFilters(Politician politician,
+                                   String state,
+                                   String party,
+                                   String position,
+                                   String name) {
+        if (state != null && !state.isBlank()
+                && (politician.getState() == null || !politician.getState().equalsIgnoreCase(state.trim()))) {
+            return false;
+        }
+        if (party != null && !party.isBlank()
+                && (politician.getParty() == null || !politician.getParty().equalsIgnoreCase(party.trim()))) {
+            return false;
+        }
+        if (position != null && !position.isBlank()
+                && (politician.getPosition() == null
+                || !politician.getPosition().toLowerCase().contains(position.trim().toLowerCase()))) {
+            return false;
+        }
+        if (name != null && !name.isBlank()
+                && (politician.getName() == null
+                || !politician.getName().toLowerCase().contains(name.trim().toLowerCase()))) {
+            return false;
+        }
+        return true;
+    }
+
+    private List<RankingItemResponse> finalizeRanking(List<RankingItemResponse> ranking, String order) {
+        if ("asc".equalsIgnoreCase(order)) {
+            ranking.sort(Comparator.comparing(RankingItemResponse::value));
+        } else {
+            ranking.sort(Comparator.comparing(RankingItemResponse::value).reversed());
+        }
+
+        List<RankingItemResponse> result = new ArrayList<>();
+        int pos = 1;
+        int limit = ranking.size();
+        for (int i = 0; i < limit; i++) {
+            RankingItemResponse item = ranking.get(i);
+            result.add(new RankingItemResponse(
+                    pos++,
+                    item.politicianId(),
+                    item.politicianName(),
+                    item.party(),
+                    item.state(),
+                    item.positionTitle(),
+                    item.value(),
+                    item.secondaryValue()
+            ));
+        }
+        return result;
     }
 }

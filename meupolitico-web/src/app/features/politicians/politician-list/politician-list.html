@@ -44,30 +44,8 @@
     }
   </div>
 
-  @if (state.totalPages > 1) {
-  <div class="pager">
-    <button type="button" class="secondary" [disabled]="state.page === 0" (click)="prev(state.page)">
-      Anterior
-    </button>
-
-    <label class="page-jump">
-      Página
-      <select [value]="state.page" (change)="goToPage($event)">
-        @for (p of pageNumbers(state.totalPages); track p) {
-        <option [value]="p" [selected]="p === state.page">
-          {{ p + 1 }}
-        </option>
-        }
-      </select>
-      de {{ state.totalPages }} ({{ state.totalElements }})
-    </label>
-
-    <button type="button" class="secondary" [disabled]="state.page + 1 >= state.totalPages"
-      (click)="next(state.page, state.totalPages)">
-      Seguinte
-    </button>
-  </div>
-  }
+  <app-pager [page]="state.page" [totalPages]="state.totalPages" [totalElements]="state.totalElements"
+    (pageChange)="onPageChange($event)" />
   }
   }
 </section>

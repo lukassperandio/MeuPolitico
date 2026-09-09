@@ -1,0 +1,12 @@
+<form class="rank-filters" [formGroup]="form" (ngSubmit)="apply()">
+  <input formControlName="name" placeholder="Nome do político" />
+  <input formControlName="party" placeholder="Partido (ex: PT)" />
+  <input type="date" formControlName="startDate" title="Data inicial" />
+  <input type="date" formControlName="endDate" title="Data final" />
+  <select formControlName="order">
+    <option value="desc">Maior → menor</option>
+    <option value="asc">Menor → maior</option>
+  </select>
+  <button type="submit">Filtrar</button>
+  <button type="button" class="secondary" (click)="clear()">Limpar</button>
+</form>

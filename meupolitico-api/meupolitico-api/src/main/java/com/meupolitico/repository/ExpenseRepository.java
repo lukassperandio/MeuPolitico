@@ -42,7 +42,7 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long>,
     FROM expense e
     GROUP BY e.politician_id
     ORDER BY total DESC
-    LIMIT 50
+    LIMIT 1000
     """, nativeQuery = true)
     List<Object[]> findTopExpenseTotals();
 

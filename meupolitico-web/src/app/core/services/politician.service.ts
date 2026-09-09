@@ -12,12 +12,14 @@ export class PoliticianService {
 
   findAll(page = 0, size = 20, name?: string): Observable<Page<Politician>> {
     let params = new HttpParams()
-      .set('page', page)
-      .set('size', size);
-    if (name?.trim()) {
+      .set('page', String(page))
+      .set('size', String(size));
+
+    if (name != null && name.trim() !== '') {
       params = params.set('name', name.trim());
     }
-    return this.http.get<Page<Politician>>('/api/politicians', { params });
+
+    return this.http.get<Page<Politician>>(this.baseUrl, { params });
   }
 
   findById(id: number): Observable<Politician> {

@@ -38,10 +38,11 @@ public class PoliticianController {
     }
 
     @GetMapping
-    @Operation(summary = "Listar políticos (paginado)", description = "Use page e size (ex.: page=0&size=20)")
-    @ApiResponse(responseCode = "200", description = "Página de políticos")
-    public ResponseEntity<Page<PoliticianResponse>> findAll(Pageable pageable) {
-        return ResponseEntity.ok(politicianService.findAll(pageable));
+    public ResponseEntity<Page<PoliticianResponse>> findAll(
+            @RequestParam(required = false) String name,
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(politicianService.findAll(name, pageable));
     }
 
     @GetMapping("/search/name")

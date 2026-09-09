@@ -27,8 +27,12 @@ public class PoliticianService {
         this.politicianMapper = politicianMapper;
     }
 
-    public Page<PoliticianResponse> findAll(Pageable pageable) {
-        return politicianRepository.findAll(pageable)
+    public Page<PoliticianResponse> findAll(String name, Pageable pageable) {
+        if (name == null || name.isBlank()) {
+            return politicianRepository.findAll(pageable)
+                    .map(politicianMapper::toResponse);
+        }
+        return politicianRepository.searchAll(name.trim(), pageable)
                 .map(politicianMapper::toResponse);
     }
 

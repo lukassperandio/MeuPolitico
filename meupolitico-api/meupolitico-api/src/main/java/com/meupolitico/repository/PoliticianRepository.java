@@ -2,7 +2,11 @@ package com.meupolitico.repository;
 
 import com.meupolitico.entity.Politician;
 import com.meupolitico.enums.Gender;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -41,4 +45,22 @@ public interface PoliticianRepository extends JpaRepository<Politician, Long> {
     List<Politician> findByPartyAndState(String party, String state);
     List<Politician> findByStateAndPosition(String state, String position);
     List<Politician> findByPartyAndPosition(String party, String position);
+
+    @Query("""
+    SELECT p FROM Politician p
+    WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :q, '%'))
+       OR LOWER(p.ballotName) LIKE LOWER(CONCAT('%', :q, '%'))
+       OR LOWER(p.party) LIKE LOWER(CONCAT('%', :q, '%'))
+       OR LOWER(p.state) LIKE LOWER(CONCAT('%', :q, '%'))
+    """)
+    Page<Politician> searchByNamePartyOrState(@Param("q") String q, Pageable pageable);
+
+    @Query("""
+    SELECT p FROM Politician p
+    WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :q, '%'))
+       OR LOWER(COALESCE(p.ballotName, '')) LIKE LOWER(CONCAT('%', :q, '%'))
+       OR LOWER(COALESCE(p.party, '')) LIKE LOWER(CONCAT('%', :q, '%'))
+       OR LOWER(COALESCE(p.state, '')) LIKE LOWER(CONCAT('%', :q, '%'))
+    """)
+    Page<Politician> searchAll(@Param("q") String q, Pageable pageable);
 }

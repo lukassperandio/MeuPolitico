@@ -7,6 +7,8 @@
     <button type="button" [class.active]="type === 'assets'" (click)="setType('assets')">Patrimônio</button>
   </div>
 
+  <app-rank-filters (filtersChange)="onFiltersChange($event)" />
+
   @if (loading) {
   <p>Carregando...</p>
   }
@@ -34,7 +36,7 @@
 
   @if (!loading && !error) {
   <ol class="ranking">
-    @for (item of items; track item.politicianId) {
+    @for (item of pageItems; track item.politicianId) {
     <li>
       <span class="pos" [style.background]="item.party | partyColor">{{ item.position }}º</span>
       <a [routerLink]="['/politicians', item.politicianId]">
@@ -52,5 +54,8 @@
     </li>
     }
   </ol>
+
+  <app-pager [page]="page" [totalPages]="totalPages" [totalElements]="items.length"
+    (pageChange)="onPageChange($event)" />
   }
 </section>

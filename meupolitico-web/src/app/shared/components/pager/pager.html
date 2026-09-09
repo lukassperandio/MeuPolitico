@@ -1,0 +1,29 @@
+@if (totalPages > 1) {
+  <div class="pager">
+    <button type="button" class="secondary" [disabled]="page === 0" (click)="prev()">
+      Anterior
+    </button>
+
+    <label class="page-jump">
+      Página
+      <select [value]="page" (change)="goTo($event)">
+        @for (p of pages; track p) {
+          <option [value]="p" [selected]="p === page">{{ p + 1 }}</option>
+        }
+      </select>
+      de {{ totalPages }}
+      @if (totalElements > 0) {
+        ({{ totalElements }})
+      }
+    </label>
+
+    <button
+      type="button"
+      class="secondary"
+      [disabled]="page + 1 >= totalPages"
+      (click)="next()"
+    >
+      Seguinte
+    </button>
+  </div>
+}
