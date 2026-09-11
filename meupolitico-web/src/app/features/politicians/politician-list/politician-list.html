@@ -3,23 +3,42 @@
   <h1>Quem você quer <span>fiscalizar</span> hoje?</h1>
 
   <div class="searchbar">
-    <input type="search" [formControl]="searchControl" placeholder="Nome, partido ou estado…" />
+    <input type="search" [formControl]="searchControl" placeholder="Nome, partido ou estado…"
+      aria-label="Buscar político por nome, partido ou estado" />
   </div>
 
   @if (state$ | async; as state) {
   @if (state.loading) {
-  <p class="muted">Carregando...</p>
+  <p class="muted" role="status" aria-live="polite">Carregando...</p>
   }
 
   @if (state.error) {
-  <p class="error">{{ state.error }}</p>
+  <p class="error" role="alert">{{ state.error }}</p>
   }
 
   @if (!state.loading && !state.error && state.politicians.length === 0) {
-  <p class="muted">Nenhum político encontrado.</p>
+  <div class="empty-state" role="status" aria-live="polite">
+    @if (searchControl.value.trim()) {
+    <p class="empty-title">
+      Nenhum político encontrado para "{{ searchControl.value.trim() }}".
+    </p>
+    <p class="empty-hint">
+      Tente buscar por sobrenome, sigla do partido (ex.: PT, PSD) ou estado (ex.: SP).
+    </p>
+    <button type="button" class="btn-secondary" (click)="clearSearch()">
+      Limpar busca
+    </button>
+    } @else {
+    <p class="empty-title">Ainda não há políticos para mostrar.</p>
+    <p class="empty-hint">
+      Os dados são sincronizados a partir dos Dados Abertos da Câmara.
+      Se isto persistir, a fonte pode estar temporariamente indisponível.
+    </p>
+    }
+  </div>
   }
 
-  @if (!state.loading && !state.error) {
+  @if (!state.loading && !state.error && state.politicians.length > 0) {
   <div class="cards">
     @for (p of state.politicians; track p.id) {
     <a class="pol-card" [routerLink]="['/politicians', p.id]" [style.borderLeftColor]="p.party | partyColor">

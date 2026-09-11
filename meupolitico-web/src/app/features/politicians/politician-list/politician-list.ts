@@ -114,4 +114,9 @@ export class PoliticianListComponent implements OnInit {
   onPageChange(page: number): void {
     this.page$.next(page);
   }
+
+  clearSearch(): void {
+    this.searchControl.setValue('');
+    this.page$.next(0);
+  }
 }
