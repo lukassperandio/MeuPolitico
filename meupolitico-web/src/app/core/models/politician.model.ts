@@ -21,3 +21,10 @@ export interface Page<T> {
   size: number;
   number: number;
 }
+
+export  interface SelectedPolitician {
+  id: number;
+  name: string;
+  party: string | null;
+  state: string | null;
+}

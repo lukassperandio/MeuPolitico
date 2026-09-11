@@ -6,6 +6,8 @@ $ink: #1c1c1c;
 $muted: #555;
 $border: #e0e0e0;
 $bg-soft: #f8f8f8;
+$bg-chip: #eaf0fb;
+$border-chip: #b8c9e8;
 
 .compare-page {
   max-width: 960px;
@@ -29,63 +31,267 @@ $bg-soft: #f8f8f8;
     color: $muted;
     font-size: 0.95rem;
     margin: 0;
+    max-width: 60ch;
   }
 }
 
-.search-bar {
-  display: flex;
-  align-items: stretch;
-  background: $bg-soft;
-  border: 1px solid $border;
-  border-radius: 10px;
-  overflow: hidden;
-  margin-bottom: 1.75rem;
+// ---------- Seletor de políticos ----------
+.selector-section {
+  margin-bottom: 2rem;
+}
+
+.field-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: $ink;
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.01em;
+}
+
+.field-hint {
+  font-size: 0.8rem;
+  color: $muted;
+  margin: 0.5rem 0 0;
+}
+
+.search-wrap {
+  position: relative;
+
+  .search-icon {
+    position: absolute;
+    left: 0.9rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $muted;
+    pointer-events: none;
+  }
 
   input {
-    flex: 1;
-    border: none;
-    background: transparent;
-    padding: 0.9rem 1.1rem;
-    font-size: 0.95rem;
+    width: 100%;
+    padding: 0.8rem 2.75rem 0.8rem 2.6rem;
+    border: 1px solid $border;
+    border-radius: 6px;
+    background: #fff;
     color: $ink;
-
-    &:focus {
-      outline: 2px solid $gov-blue;
-      outline-offset: -2px;
-    }
+    font-size: 0.95rem;
+    transition: border-color 0.12s ease, box-shadow 0.12s ease;
 
     &::placeholder {
       color: #8a8a8a;
     }
+
+    &:focus {
+      outline: none;
+      border-color: $gov-blue;
+      box-shadow: 0 0 0 3px rgba(19, 81, 180, 0.18);
+    }
   }
 
-  .search-btn {
+  .search-loading {
+    position: absolute;
+    right: 0.9rem;
+    top: 50%;
+    width: 14px;
+    height: 14px;
+    margin-top: -7px;
+    border-radius: 50%;
+    border: 2px solid $border;
+    border-top-color: $gov-blue;
+    animation: spin 0.7s linear infinite;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// ---------- Sugestões ----------
+.suggestions {
+  list-style: none;
+  margin: 0.25rem 0 0;
+  padding: 0;
+  background: #fff;
+  border: 1px solid $border;
+  border-radius: 6px;
+  max-height: 300px;
+  overflow-y: auto;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.suggestion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid $border;
+  cursor: pointer;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: $bg-soft;
+  }
+
+  .suggestion-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .suggestion-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: $ink;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .suggestion-meta {
+    font-size: 0.78rem;
+    color: $muted;
+    margin-top: 0.1rem;
+  }
+
+  .suggestion-action {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: $gov-blue;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    flex-shrink: 0;
+  }
+}
+
+// ---------- Chips de selecionados ----------
+.selected-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.75rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.selected-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.4rem 0.4rem 0.75rem;
+  background: $bg-chip;
+  border: 1px solid $border-chip;
+  border-radius: 999px;
+  max-width: 100%;
+
+  .chip-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .chip-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: $gov-blue-dark;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 220px;
+  }
+
+  .chip-meta {
+    font-size: 0.72rem;
+    color: $muted;
+    line-height: 1.1;
+  }
+
+  .chip-remove {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 1.25rem;
-    background: $gov-blue;
-    color: #fff;
+    width: 22px;
+    height: 22px;
     border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: $gov-blue-dark;
     cursor: pointer;
-    transition: background 0.15s ease;
+    flex-shrink: 0;
+    transition: background 0.12s ease;
 
     &:hover {
-      background: $gov-blue-dark;
+      background: rgba(19, 81, 180, 0.15);
+    }
+
+    &:focus-visible {
+      outline: 2px solid $gov-blue;
+      outline-offset: 1px;
     }
   }
 }
 
+// ---------- Ações ----------
+.actions {
+  margin-top: 1.25rem;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: $gov-blue;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: $gov-blue-dark;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $gov-blue;
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// ---------- Estados ----------
 .status {
   color: $muted;
   font-size: 0.95rem;
+  margin: 1rem 0;
 
   &.error {
     color: #b3231c;
     font-weight: 600;
   }
+
+  &.empty {
+    padding: 1.5rem;
+    background: $bg-soft;
+    border: 1px dashed $border;
+    border-radius: 8px;
+    text-align: center;
+  }
 }
 
+// ---------- Resultados (base existente, ajustes mínimos) ----------
 .results-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -144,7 +350,7 @@ $bg-soft: #f8f8f8;
     letter-spacing: 0.03em;
     text-transform: uppercase;
     color: $gov-blue-dark;
-    background: #eaf0fb;
+    background: $bg-chip;
     padding: 0.2rem 0.55rem;
     border-radius: 999px;
   }
@@ -153,6 +359,22 @@ $bg-soft: #f8f8f8;
     color: $muted;
     font-size: 0.85rem;
     margin: 0 0 1rem;
+  }
+
+  &.is-skeleton {
+    .skeleton-line {
+      display: inline-block;
+      width: 80px;
+      height: 14px;
+      border-radius: 4px;
+      background: linear-gradient(90deg,
+          #e8e8e8 0%,
+          #f2f2f2 50%,
+          #e8e8e8 100%);
+      background-size: 200% 100%;
+      animation: shimmer 1.2s ease-in-out infinite;
+      margin: 0;
+    }
   }
 }
 
@@ -213,5 +435,48 @@ $bg-soft: #f8f8f8;
   svg {
     color: $gov-blue;
     flex-shrink: 0;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .compare-page {
+    padding: 1.25rem 1rem 2rem;
+  }
+
+  .page-head h1 {
+    font-size: 1.4rem;
+  }
+
+  .page-head .subtitle {
+    font-size: 0.9rem;
+  }
+
+  .search-wrap input {
+    padding: 0.75rem 2.5rem 0.75rem 2.4rem;
+    font-size: 16px; // evita zoom iOS
+  }
+
+  .selected-chip .chip-name {
+    max-width: 160px;
+  }
+
+  .btn-primary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .results-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 }
