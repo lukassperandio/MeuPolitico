@@ -1,7 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   BehaviorSubject,
   catchError,
@@ -35,10 +36,11 @@ interface ListState {
   templateUrl: './politician-list.html',
   styleUrl: './politician-list.scss'
 })
-export class PoliticianListComponent {
+export class PoliticianListComponent implements OnInit {
 
   private readonly politicianService = inject(PoliticianService);
   private readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly pageSize = 20;
 
@@ -91,11 +93,22 @@ export class PoliticianListComponent {
   );
 
   constructor() {
-    this.term$.subscribe(() => {
+    this.term$.pipe(takeUntilDestroyed()).subscribe(() => {
       if (this.page$.value !== 0) {
         this.page$.next(0);
       }
     });
+  }
+
+  ngOnInit(): void {
+    this.route.queryParamMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        const q = params.get('q') ?? '';
+        if (this.searchControl.value !== q) {
+          this.searchControl.setValue(q);
+        }
+      });
   }
 
   onPageChange(page: number): void {
