@@ -1,0 +1,82 @@
+<section class="home">
+  <div class="search-row">
+    <input type="search" [formControl]="q" placeholder="Busque por nome, partido ou estado"
+      (keyup.enter)="goSearch()" />
+    <button type="button" class="btn-primary" (click)="goSearch()">Buscar</button>
+  </div>
+
+  <div class="hero">
+    <div class="hero-text">
+      <p class="eyebrow">Informação pública, sem ruído</p>
+      <h1>Quem representa você <span>presta contas.</span></h1>
+      <p class="lead">
+        Gastos, presença e patrimônio de quem ocupa um cargo público.
+        Organizado para você entender em poucos minutos.
+      </p>
+      <a routerLink="/politicians" class="btn-accent">Explorar políticos →</a>
+    </div>
+    <div class="hero-stat">
+      <p class="stat-label">Dados oficiais</p>
+      <p class="stat-num">{{ loading ? '…' : totalPoliticians }}</p>
+      <p class="stat-sub">deputados federais catalogados</p>
+      <p class="stat-foot">Atualizado com fontes oficiais</p>
+    </div>
+  </div>
+
+  <section class="section">
+    <p class="section-eyebrow">Aprenda mais</p>
+    <h2>O que você pode consultar</h2>
+    <div class="grid">
+      <a routerLink="/rankings" class="tile">
+        <strong>Gastos públicos</strong>
+        <span>Despesas, fornecedores e evolução mensal no perfil.</span>
+      </a>
+      <a routerLink="/politicians" class="tile">
+        <strong>Presença</strong>
+        <span>Presenças registadas em eventos da Câmara.</span>
+      </a>
+      <a routerLink="/rankings" class="tile">
+        <strong>Patrimônio declarado</strong>
+        <span>Bens informados ao TSE na candidatura.</span>
+      </a>
+      <a routerLink="/compare" class="tile">
+        <strong>Comparar políticos</strong>
+        <span>Lado a lado: gastos, presença e patrimônio.</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <p class="section-eyebrow">Leitura de relance</p>
+        <h2>Maiores gastos registados</h2>
+      </div>
+      <a routerLink="/rankings" class="link-more">Abrir ranking →</a>
+    </div>
+
+    @if (loading) {
+    <p class="muted">Carregando...</p>
+    } @else if (topExpenses.length === 0) {
+    <p class="muted">Sem dados de ranking no momento.</p>
+    } @else {
+    <ol class="preview-rank">
+      @for (item of topExpenses; track item.politicianId) {
+      <li>
+        <span class="pos">{{ item.position }}</span>
+        <a [routerLink]="['/politicians', item.politicianId]">
+          <strong>{{ item.politicianName }}</strong>
+          <span class="meta">{{ item.party }} · {{ item.state }}</span>
+        </a>
+        <span class="val">{{ item.value | currency: 'BRL':'symbol':'1.0-0' }}</span>
+      </li>
+      }
+    </ol>
+    }
+  </section>
+
+  <section class="cta-band">
+    <h2>Não basta saber o número.<br />É preciso entender o que ele significa.</h2>
+    <a routerLink="/politicians" class="btn-outline">Começar a consultar →</a>
+  </section>
+</section>

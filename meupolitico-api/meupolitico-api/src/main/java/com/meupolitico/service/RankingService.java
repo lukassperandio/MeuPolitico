@@ -215,7 +215,8 @@ public class RankingService {
             return false;
         }
         if (party != null && !party.isBlank()
-                && (politician.getParty() == null || !politician.getParty().equalsIgnoreCase(party.trim()))) {
+                && (politician.getParty() == null
+                || !politician.getParty().equalsIgnoreCase(party.trim()))) {
             return false;
         }
         if (position != null && !position.isBlank()

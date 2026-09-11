@@ -59,8 +59,8 @@ public interface PoliticianRepository extends JpaRepository<Politician, Long> {
     SELECT p FROM Politician p
     WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :q, '%'))
        OR LOWER(COALESCE(p.ballotName, '')) LIKE LOWER(CONCAT('%', :q, '%'))
-       OR LOWER(COALESCE(p.party, '')) LIKE LOWER(CONCAT('%', :q, '%'))
-       OR LOWER(COALESCE(p.state, '')) LIKE LOWER(CONCAT('%', :q, '%'))
+       OR LOWER(COALESCE(p.party, '')) = LOWER(:q)
+       OR LOWER(COALESCE(p.state, '')) = LOWER(:q)
     """)
     Page<Politician> searchAll(@Param("q") String q, Pageable pageable);
 }

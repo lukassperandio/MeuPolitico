@@ -1,11 +1,12 @@
 <header class="header">
   <div class="inner">
-    <a routerLink="/politicians" class="brand">
-      <span class="mark" aria-hidden="true"></span>
+    <a routerLink="/" class="brand">
+      <img src="/logo.png" alt="MeuPolítico" class="logo" width="40" height="40" />
       <span class="name">Meu<span>Político</span></span>
     </a>
     <nav class="nav">
-      <a routerLink="/politicians" routerLinkActive="active">Políticos</a>
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Início</a>
+      <a routerLink="/politicians" routerLinkActive="active">Consultas</a>
       <a routerLink="/rankings" routerLinkActive="active">Rankings</a>
       <a routerLink="/compare" routerLinkActive="active">Comparar</a>
     </nav>

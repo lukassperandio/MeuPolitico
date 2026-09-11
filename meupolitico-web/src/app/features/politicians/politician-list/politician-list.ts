@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
   BehaviorSubject,
   catchError,
@@ -41,8 +41,8 @@ export class PoliticianListComponent {
   readonly pageSize = 20;
   readonly searchControl = new FormControl('', { nonNullable: true });
   private readonly page$ = new BehaviorSubject<number>(0);
+  private readonly route = inject(ActivatedRoute);
 
-  /** termo já com debounce — ao mudar, página volta a 0 */
   private readonly term$ = this.searchControl.valueChanges.pipe(
     startWith(''),
     debounceTime(300),
@@ -90,9 +90,21 @@ export class PoliticianListComponent {
         this.page$.next(0);
       }
     });
+
+    const q = this.route.snapshot.queryParamMap.get('q');
+    if (q) {
+      this.searchControl.setValue(q);
+    }
   }
 
   onPageChange(page: number): void {
     this.page$.next(page);
+  }
+
+  ngOnInit(): void {
+    const q = this.route.snapshot.queryParamMap.get('q');
+    if (q) {
+      this.searchControl.setValue(q, { emitEvent: true });
+    }
   }
 }

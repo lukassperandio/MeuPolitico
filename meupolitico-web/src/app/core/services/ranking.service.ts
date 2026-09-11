@@ -38,12 +38,21 @@ export class RankingService {
     order?: string;
   }) {
     let httpParams = new HttpParams();
-    if (params.party) httpParams = httpParams.set('party', params.party);
-    if (params.name) httpParams = httpParams.set('name', params.name);
-    if (params.startDate) httpParams = httpParams.set('startDate', params.startDate);
-    if (params.endDate) httpParams = httpParams.set('endDate', params.endDate);
-    if (params.order) httpParams = httpParams.set('order', params.order);
-
-    return this.http.get<RankingItem[]>(`/api/rankings/${type}`, { params: httpParams });
+    if (params.party?.trim()) {
+      httpParams = httpParams.set('party', params.party.trim());
+    }
+    if (params.name?.trim()) {
+      httpParams = httpParams.set('name', params.name.trim());
+    }
+    if (params.startDate) {
+      httpParams = httpParams.set('startDate', params.startDate);
+    }
+    if (params.endDate) {
+      httpParams = httpParams.set('endDate', params.endDate);
+    }
+    if (params.order) {
+      httpParams = httpParams.set('order', params.order);
+    }
+    return this.http.get<RankingItem[]>(`${this.baseUrl}/${type}`, { params: httpParams });
   }
 }

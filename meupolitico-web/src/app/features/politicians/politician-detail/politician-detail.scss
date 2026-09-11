@@ -187,12 +187,11 @@
   border-bottom: 2px solid var(--gov-blue);
 
   img {
-    width: 48px;
-    /* era ~72+ */
-    height: 48px;
-    border-radius: 4px;
+    width: 112px;
+    height: 140px;
     object-fit: cover;
-    flex-shrink: 0;
+    object-position: top center;
+    border-radius: 8px;
   }
 
   h1 {
@@ -248,7 +247,6 @@
 
 .load-more {
   border-radius: 4px;
-  /* menos “pill” */
 }
 
 ~.total-line {

@@ -63,3 +63,29 @@
     }
   }
 }
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  text-decoration: none;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+  display: block;
+}
+
+.name {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--gov-blue-dark);
+
+  span {
+    color: var(--gov-green);
+  }
+}

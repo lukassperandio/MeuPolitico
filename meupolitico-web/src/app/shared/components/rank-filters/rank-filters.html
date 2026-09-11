@@ -1,6 +1,6 @@
 <form class="rank-filters" [formGroup]="form" (ngSubmit)="apply()">
   <input formControlName="name" placeholder="Nome do político" />
-  <input formControlName="party" placeholder="Partido (ex: PT)" />
+  <input formControlName="party" placeholder="Partido (sigla exacta: PT, PL, PSD)" />
   <input type="date" formControlName="startDate" title="Data inicial" />
   <input type="date" formControlName="endDate" title="Data final" />
   <select formControlName="order">
