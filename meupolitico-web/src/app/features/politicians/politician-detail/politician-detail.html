@@ -75,15 +75,21 @@
   <section class="expenses block">
     <h2>Gastos</h2>
 
-    @if (expenseTotal; as t) {
-    <p class="total-line">
-      <strong>Total no período importado:</strong>
-      {{ t.totalAmount | currency: 'BRL' }}
-      @if (t.lastExpenseDate) {
-      · atualizado até {{ t.lastExpenseDate | date: 'dd/MM/yyyy' }}
-      }
-      ({{ t.expenseCount }} despesas)
-    </p>
+    @if (expenseTotals; as t) {
+    <div class="totals-grid">
+      <div class="total-card">
+        <span class="label">Geral</span>
+        <strong>{{ t.totalAll | currency: 'BRL' }}</strong>
+      </div>
+      <div class="total-card">
+        <span class="label">Neste ano ({{ t.year }})</span>
+        <strong>{{ t.totalYear | currency: 'BRL' }}</strong>
+      </div>
+      <div class="total-card">
+        <span class="label">Mandato (desde {{ t.mandateStart | date: 'MM/yyyy' }})</span>
+        <strong>{{ t.totalMandate | currency: 'BRL' }}</strong>
+      </div>
+    </div>
     }
 
     @if (monthlyBars.length) {

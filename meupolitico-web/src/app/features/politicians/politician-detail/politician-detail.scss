@@ -292,3 +292,29 @@
   font-weight: 600;
   color: var(--gov-blue-dark);
 }
+
+.totals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.75rem;
+  margin: 0.75rem 0 1.25rem;
+}
+
+.total-card {
+  background: var(--bg-soft, #f8f8f8);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+
+  .label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-bottom: 0.35rem;
+  }
+
+  strong {
+    font-size: 1.05rem;
+    color: var(--gov-blue-dark);
+  }
+}

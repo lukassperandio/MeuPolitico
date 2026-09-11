@@ -4,6 +4,7 @@ import com.meupolitico.dto.request.ExpenseRequest;
 import com.meupolitico.dto.response.ExpenseMonthlyResponse;
 import com.meupolitico.dto.response.ExpenseResponse;
 import com.meupolitico.dto.response.ExpenseTotalResponse;
+import com.meupolitico.dto.response.ExpenseTotalsResponse;
 import com.meupolitico.enums.ExpenseCategory;
 import com.meupolitico.service.ExpenseService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -172,5 +173,11 @@ public class ExpenseController {
     @GetMapping("/politician/{id}/monthly")
     public ResponseEntity<ExpenseMonthlyResponse> monthly(@PathVariable Long id) {
         return ResponseEntity.ok(expenseService.monthlyByPolitician(id));
+    }
+
+    @GetMapping("/politician/{politicianId}/totals")
+    public ResponseEntity<ExpenseTotalsResponse> totals(
+            @PathVariable Long politicianId) {
+        return ResponseEntity.ok(expenseService.totalsByPolitician(politicianId));
     }
 }

@@ -36,15 +36,21 @@ interface ListState {
   styleUrl: './politician-list.scss'
 })
 export class PoliticianListComponent {
-  private readonly politicianService = inject(PoliticianService);
 
-  readonly pageSize = 20;
-  readonly searchControl = new FormControl('', { nonNullable: true });
-  private readonly page$ = new BehaviorSubject<number>(0);
+  private readonly politicianService = inject(PoliticianService);
   private readonly route = inject(ActivatedRoute);
 
+  readonly pageSize = 20;
+
+  readonly searchControl = new FormControl(
+    this.route.snapshot.queryParamMap.get('q') ?? '',
+    { nonNullable: true }
+  );
+
+  private readonly page$ = new BehaviorSubject<number>(0);
+
   private readonly term$ = this.searchControl.valueChanges.pipe(
-    startWith(''),
+    startWith(this.searchControl.value),
     debounceTime(300),
     distinctUntilChanged(),
     map((t) => t.trim())
@@ -90,21 +96,9 @@ export class PoliticianListComponent {
         this.page$.next(0);
       }
     });
-
-    const q = this.route.snapshot.queryParamMap.get('q');
-    if (q) {
-      this.searchControl.setValue(q);
-    }
   }
 
   onPageChange(page: number): void {
     this.page$.next(page);
-  }
-
-  ngOnInit(): void {
-    const q = this.route.snapshot.queryParamMap.get('q');
-    if (q) {
-      this.searchControl.setValue(q, { emitEvent: true });
-    }
   }
 }

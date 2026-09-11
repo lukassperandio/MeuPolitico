@@ -65,4 +65,24 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long>,
 
     @Query("select max(e.date) from Expense e where e.politician.id = :id")
     Optional<LocalDate> findLastDate(@Param("id") Long id);
+
+    @Query("""
+    SELECT COALESCE(SUM(e.amount), 0)
+    FROM Expense e
+    WHERE e.politician.id = :politicianId
+    """)
+    BigDecimal sumByPoliticianId(@Param("politicianId") Long politicianId);
+
+    @Query("""
+    SELECT COALESCE(SUM(e.amount), 0)
+    FROM Expense e
+    WHERE e.politician.id = :politicianId
+      AND e.date >= :start
+      AND e.date <= :end
+    """)
+    BigDecimal sumByPoliticianIdAndDateBetween(
+            @Param("politicianId") Long politicianId,
+            @Param("start") LocalDate start,
+            @Param("end") LocalDate end
+    );
 }

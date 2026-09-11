@@ -2,7 +2,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Expense } from '../models/expense.model';
+import { Expense, ExpenseTotals } from '../models/expense.model';
 import { Page } from '../models/politician.model';
 
 export interface ExpenseSearchParams {
@@ -59,5 +59,11 @@ export class ExpenseService {
       politicianId: number;
       months: { month: string; total: number }[];
     }>(`${this.baseUrl}/politician/${politicianId}/monthly`);
+  }
+
+  totalsByPolitician(politicianId: number): Observable<ExpenseTotals> {
+    return this.http.get<ExpenseTotals>(
+      `${this.baseUrl}/politician/${politicianId}/totals`
+    );
   }
 }

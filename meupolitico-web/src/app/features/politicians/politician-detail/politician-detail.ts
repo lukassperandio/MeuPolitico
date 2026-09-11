@@ -9,7 +9,7 @@ import { ExpenseService } from '../../../core/services/expense.service';
 import { AttendanceService } from '../../../core/services/attendance.service';
 import { AssetService } from '../../../core/services/asset.service';
 import { Politician } from '../../../core/models/politician.model';
-import { Expense } from '../../../core/models/expense.model';
+import { Expense, ExpenseTotals } from '../../../core/models/expense.model';
 import { AttendanceSummary } from '../../../core/models/attendance.model';
 import { AssetEvolution } from '../../../core/models/asset.model';
 import { ExpenseCategoryLabelPipe } from '../../../shared/pipes/expense-category-label-pipe';
@@ -39,6 +39,8 @@ export class PoliticianDetailComponent implements OnInit {
   private readonly assetService = inject(AssetService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly destroyRef = inject(DestroyRef);
+
+  expenseTotals: ExpenseTotals | null = null;
 
   politician: Politician | null = null;
   expenses: Expense[] = [];
@@ -78,7 +80,6 @@ export class PoliticianDetailComponent implements OnInit {
     return this.expenses.reduce((sum, e) => sum + (Number(e.amount) || 0), 0);
   }
 
-  /** Presenças registadas (fonte Câmara: só quem marcou presença) */
   get presenceCount(): number {
     if (this.attendanceSummary?.present != null) {
       return this.attendanceSummary.present;
@@ -113,22 +114,28 @@ export class PoliticianDetailComponent implements OnInit {
       }),
       attendance: this.attendanceService.getSummary(id).pipe(catchError(() => of(null))),
       assets: this.assetService.getEvolution(id).pipe(catchError(() => of(null))),
-      total: this.expenseService.getTotal(id).pipe(catchError(() => of(null))),
+      totals: this.expenseService.totalsByPolitician(id).pipe(catchError(() => of(null))),
       monthly: this.expenseService.getMonthly(id).pipe(catchError(() => of(null)))
     }).subscribe({
-      next: ({ politician, expenses, attendance, assets, total, monthly }) => {
+      next: ({ politician, expenses, attendance, assets, totals, monthly }) => {
         this.politician = politician;
         this.expenses = expenses.content ?? [];
         this.totalElements = expenses.totalElements ?? 0;
         this.page = 0;
         this.attendanceSummary = attendance;
         this.assetEvolution = assets;
-        this.expenseTotal = total;
+        this.expenseTotals = totals;
         this.monthlyBars = this.toMonthlyBars(monthly);
         this.loading = false;
         this.cdr.markForCheck();
         this.setupLiveFilters();
       },
+      error: (err) => {
+        console.error(err);
+        this.error = 'Não foi possível carregar o perfil.';
+        this.loading = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 
@@ -154,6 +161,7 @@ export class PoliticianDetailComponent implements OnInit {
     }
     this.page += 1;
     this.loadExpenses(true);
+
   }
 
   private loadExpenses(append: boolean): void {

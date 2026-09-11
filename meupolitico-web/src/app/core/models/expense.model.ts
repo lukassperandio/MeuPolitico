@@ -11,3 +11,13 @@ export interface Expense {
   source: string | null;
   createdAt: string | null;
 }
+
+export interface ExpenseTotals {
+  politicianId: number;
+  totalAll: number;
+  totalYear: number;
+  year: number;
+  totalMandate: number;
+  mandateStart: string;
+  mandateEnd: string;
+}

@@ -5,6 +5,7 @@ import com.meupolitico.dto.response.ExpenseMonthTotal;
 import com.meupolitico.dto.response.ExpenseMonthlyResponse;
 import com.meupolitico.dto.response.ExpenseResponse;
 import com.meupolitico.dto.response.ExpenseTotalResponse;
+import com.meupolitico.dto.response.ExpenseTotalsResponse;
 import com.meupolitico.entity.Expense;
 import com.meupolitico.entity.Politician;
 import com.meupolitico.enums.ExpenseCategory;
@@ -182,5 +183,34 @@ public class ExpenseService {
         }
 
         return new ExpenseMonthlyResponse(id, months);
+    }
+
+    public ExpenseTotalsResponse totalsByPolitician(Long politicianId) {
+        if (!politicianRepository.existsById(politicianId)) {
+            throw new ResourceNotFoundException("Politician not found with id: " + politicianId);
+        }
+
+        int year = LocalDate.now().getYear();
+        LocalDate yearStart = LocalDate.of(year, 1, 1);
+        LocalDate yearEnd = LocalDate.of(year, 12, 31);
+
+        LocalDate mandateStart = LocalDate.of(2023, 2, 1);
+        LocalDate mandateEnd = LocalDate.now();
+
+        BigDecimal totalAll = expenseRepository.sumByPoliticianId(politicianId);
+        BigDecimal totalYear = expenseRepository.sumByPoliticianIdAndDateBetween(
+                politicianId, yearStart, yearEnd);
+        BigDecimal totalMandate = expenseRepository.sumByPoliticianIdAndDateBetween(
+                politicianId, mandateStart, mandateEnd);
+
+        return new ExpenseTotalsResponse(
+                politicianId,
+                totalAll != null ? totalAll : BigDecimal.ZERO,
+                totalYear != null ? totalYear : BigDecimal.ZERO,
+                year,
+                totalMandate != null ? totalMandate : BigDecimal.ZERO,
+                mandateStart,
+                mandateEnd
+        );
     }
 }
