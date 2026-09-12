@@ -1,0 +1,94 @@
+<footer class="site-footer">
+  <div class="container">
+
+    <!-- Bloco de marca + descrição institucional -->
+    <div class="brand-block">
+      <a routerLink="/" class="brand" aria-label="MeuPolitico — início">
+        <img src="/logo.png" alt="" class="brand-logo" width="48" height="48" />
+        <span class="brand-name">Meu<span>Político</span></span>
+      </a>
+      <p class="brand-description">
+        Plataforma cívica e independente que reúne dados públicos oficiais sobre
+        deputados federais. Sem vínculo com partidos, órgãos governamentais
+        ou campanhas eleitorais.
+      </p>
+    </div>
+
+    <!-- Colunas de links -->
+    <nav class="columns" aria-label="Rodapé">
+
+      <section class="col">
+        <h2 class="col-title">Navegação</h2>
+        <ul>
+          <li><a routerLink="/">Início</a></li>
+          <li><a routerLink="/politicians">Consultas</a></li>
+          <li><a routerLink="/rankings">Rankings</a></li>
+          <li><a routerLink="/compare">Comparar</a></li>
+        </ul>
+      </section>
+
+      <section class="col">
+        <h2 class="col-title">Fontes oficiais</h2>
+        <ul>
+          <li>
+            <a href="https://dadosabertos.camara.leg.br" target="_blank" rel="noopener">
+              Dados Abertos da Câmara
+            </a>
+          </li>
+          <li>
+            <a href="https://portaldatransparencia.gov.br" target="_blank" rel="noopener">
+              Portal da Transparência
+            </a>
+          </li>
+          <li>
+            <a href="https://divulgacandcontas.tse.jus.br" target="_blank" rel="noopener">
+              TSE — Divulgação de Candidaturas
+            </a>
+          </li>
+        </ul>
+      </section>
+
+      <section class="col">
+        <h2 class="col-title">Sobre</h2>
+        <ul>
+          <!-- TODO: criar rota /about -->
+          <li><a href="#">Sobre o projeto</a></li>
+          <!-- TODO: criar rota /methodology -->
+          <li><a href="#">Metodologia</a></li>
+          <!-- TODO: criar rota /how-to-read -->
+          <li><a href="#">Como ler os números</a></li>
+          <li>
+            <a href="https://github.com/lukassperandio/MeuPolitico"
+               target="_blank" rel="noopener">
+              Código no GitHub
+            </a>
+          </li>
+        </ul>
+      </section>
+
+      <section class="col">
+        <h2 class="col-title">Legal</h2>
+        <ul>
+          <!-- TODO: criar rota /privacy -->
+          <li><a href="#">Aviso de privacidade</a></li>
+          <!-- TODO: criar rota /terms -->
+          <li><a href="#">Termos de uso</a></li>
+          <!-- TODO: criar rota /accessibility -->
+          <li><a href="#">Acessibilidade</a></li>
+        </ul>
+      </section>
+
+    </nav>
+
+    <!-- Barra inferior -->
+    <div class="bottom-bar">
+      <p class="copyright">
+        © {{ currentYear }} MeuPolitico · Plataforma cívica independente
+      </p>
+      <p class="source-line">
+        Dados públicos oficiais — Câmara dos Deputados e TSE
+      </p>
+    </div>
+
+  </div>
+</footer>

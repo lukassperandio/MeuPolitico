@@ -1,0 +1,162 @@
+.site-footer {
+  background: var(--gov-blue-dark);
+  color: #fff;
+  margin-top: 4rem;
+  padding: 3rem 0 1.5rem;
+}
+
+.container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.brand-block {
+  margin-bottom: 2.5rem;
+  max-width: 42rem;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  margin-bottom: 1rem;
+}
+
+.brand-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  object-fit: cover;
+  display: block;
+}
+
+.brand-name {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: #fff;
+  letter-spacing: -0.01em;
+
+  span {
+    color: var(--gov-yellow);
+  }
+}
+
+.brand-description {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.col {
+  min-width: 0;
+}
+
+.col-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0 0 0.9rem;
+}
+
+.col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.col a {
+  display: inline-block;
+  font-size: 0.875rem;
+  color: #fff;
+  text-decoration: none;
+  line-height: 1.4;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.12s ease, color 0.12s ease;
+
+  &:hover {
+    border-bottom-color: var(--gov-yellow);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--gov-yellow);
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+}
+
+.bottom-bar {
+  padding-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem 1.5rem;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.copyright,
+.source-line {
+  margin: 0;
+}
+
+@media (max-width: 860px) {
+  .columns {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.75rem 1.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .site-footer {
+    padding: 2rem 0 1.25rem;
+    margin-top: 3rem;
+  }
+
+  .brand-block {
+    margin-bottom: 2rem;
+  }
+
+  .brand-logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  .brand-name {
+    font-size: 1.1rem;
+  }
+
+  .brand-description {
+    font-size: 0.85rem;
+  }
+
+  .columns {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .bottom-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    font-size: 0.75rem;
+  }
+}
