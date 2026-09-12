@@ -1,48 +1,107 @@
 .rank-filters {
+  padding: 1.25rem 1.25rem 1rem;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  margin: 0 0 1.5rem;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem 1rem;
+  align-items: end;
+}
+
+.field {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  align-items: center;
-  margin: 1rem 0 1.75rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--border);
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+
+  .field-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+  }
 
   input,
   select {
-    padding: 0.45rem 0.65rem;
+    width: 100%;
+    padding: 0.55rem 0.75rem;
     border: 1px solid var(--border);
-    border-radius: 4px;
-    font-size: 0.875rem;
+    border-radius: 6px;
     background: #fff;
-  }
-
-  button[type='submit'] {
-    padding: 0.45rem 1rem;
-    border: none;
-    border-radius: 4px;
-    background: var(--gov-blue);
-    color: #fff;
-    font-weight: 600;
+    font-family: inherit;
     font-size: 0.875rem;
-    cursor: pointer;
+    color: var(--ink);
+    transition: border-color 0.12s ease, box-shadow 0.12s ease;
 
-    &:hover {
-      background: var(--gov-blue-dark);
+    &::placeholder {
+      color: #a0a0a0;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: var(--gov-blue);
+      box-shadow: 0 0 0 3px var(--gov-blue-pale);
     }
   }
+}
 
-  button.secondary {
-    padding: 0.45rem 1rem;
-    border: 1px solid var(--gov-blue);
-    border-radius: 4px;
-    background: #fff;
-    color: var(--gov-blue);
-    font-weight: 600;
-    font-size: 0.875rem;
-    cursor: pointer;
+.field--actions {
+  justify-content: flex-end;
+}
 
-    &:hover {
-      background: var(--gov-blue-pale);
+.filter-hint {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin: 0.75rem 0 0;
+  font-style: italic;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.25rem;
+  border: 1.5px solid var(--gov-blue);
+  background: #fff;
+  color: var(--gov-blue);
+  border-radius: 999px;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.12s ease;
+  white-space: nowrap;
+
+  &:hover {
+    background: var(--gov-blue-pale);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--gov-blue);
+    outline-offset: 2px;
+  }
+}
+
+@media (max-width: 640px) {
+  .rank-filters {
+    padding: 1rem;
+  }
+
+  .fields {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .field--actions {
+    margin-top: 0.25rem;
+
+    .btn-secondary {
+      width: 100%;
     }
   }
 }

@@ -49,32 +49,6 @@ export class RankFiltersComponent implements OnInit {
       .subscribe(() => this.emit());
   }
 
-  apply(): void {
-    this.emit();
-  }
-
-  clear(): void {
-    this.form.reset({
-      name: '',
-      party: '',
-      startDate: '',
-      endDate: '',
-      order: 'desc'
-    });
-    this.emit();
-  }
-
-  private emit(): void {
-    const v = this.form.getRawValue();
-    this.filtersChange.emit({
-      name: v.name.trim(),
-      party: v.party.trim(),
-      startDate: v.startDate,
-      endDate: v.endDate,
-      order: v.order
-    });
-  }
-
   reset(): void {
     this.form.reset(
       {
@@ -87,5 +61,16 @@ export class RankFiltersComponent implements OnInit {
       { emitEvent: false }
     );
     this.emit();
+  }
+
+  private emit(): void {
+    const v = this.form.getRawValue();
+    this.filtersChange.emit({
+      name: v.name.trim(),
+      party: v.party.trim(),
+      startDate: v.startDate,
+      endDate: v.endDate,
+      order: v.order
+    });
   }
 }

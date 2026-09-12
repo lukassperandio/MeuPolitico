@@ -1,12 +1,42 @@
-<form class="rank-filters" [formGroup]="form" (ngSubmit)="apply()">
-  <input formControlName="name" placeholder="Nome do político" />
-  <input formControlName="party" placeholder="Partido (sigla exacta: PT, PL, PSD)" />
-  <input type="date" formControlName="startDate" title="Data inicial" />
-  <input type="date" formControlName="endDate" title="Data final" />
-  <select formControlName="order">
-    <option value="desc">Maior → menor</option>
-    <option value="asc">Menor → maior</option>
-  </select>
-  <button type="submit">Filtrar</button>
-  <button type="button" class="secondary" (click)="clear()">Limpar</button>
+<form class="rank-filters" [formGroup]="form" (ngSubmit)="$event.preventDefault()" role="search">
+
+  <div class="fields">
+
+    <label class="field">
+      <span class="field-label">Nome do político</span>
+      <input type="text" formControlName="name" placeholder="Nome ou parte" autocomplete="off" />
+    </label>
+
+    <label class="field">
+      <span class="field-label">Partido</span>
+      <input type="text" formControlName="party" placeholder="Sigla (ex.: PT, PL)" autocomplete="off" />
+    </label>
+
+    <label class="field">
+      <span class="field-label">Data inicial</span>
+      <input type="date" formControlName="startDate" />
+    </label>
+
+    <label class="field">
+      <span class="field-label">Data final</span>
+      <input type="date" formControlName="endDate" />
+    </label>
+
+    <label class="field">
+      <span class="field-label">Ordenar por</span>
+      <select formControlName="order">
+        <option value="desc">Maior → menor</option>
+        <option value="asc">Menor → maior</option>
+      </select>
+    </label>
+
+    <div class="field field--actions">
+      <button type="button" class="btn-secondary" (click)="reset()">
+        Limpar filtros
+      </button>
+    </div>
+
+  </div>
+
+  <p class="filter-hint">Os filtros aplicam automaticamente.</p>
 </form>

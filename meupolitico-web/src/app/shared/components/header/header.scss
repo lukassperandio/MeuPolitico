@@ -135,8 +135,14 @@
 }
 
 @media (max-width: 768px) {
-  .utility-bar {
-    display: none;
+  .utility-bar .inner {
+    padding: 0.35rem 1rem;
+    font-size: 0.7rem;
+    justify-content: center;
+  }
+
+  .utility-note {
+    text-align: center;
   }
 
   .main-bar .inner {
