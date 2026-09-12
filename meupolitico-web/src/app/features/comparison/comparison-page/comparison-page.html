@@ -1,18 +1,18 @@
 <section class="compare-page">
 
   <header class="page-head">
-    <h1>Comparar políticos</h1>
+    <p class="eyebrow">Comparar</p>
+    <h1>Lado a lado, os <em>números</em></h1>
     <p class="subtitle">
-      Selecione até 3 deputados para ver gastos, assiduidade e patrimônio lado a lado.
+      Selecione até 3 deputados para ver gastos, assiduidade e patrimônio em paralelo.
     </p>
   </header>
 
-  <!-- MUDANÇA: seletor por busca em vez de input de IDs -->
   <div class="selector-section">
 
     <label class="field-label" for="politician-search">Adicionar político</label>
 
-    <div class="search-wrap" [class.has-value]="searchControl.value.length >= 2">
+    <div class="search-wrap">
       <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
         stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
         <circle cx="11" cy="11" r="7"></circle>
@@ -78,13 +78,17 @@
   </div>
 
   @if (error) {
-  <p class="status error" role="alert">{{ error }}</p>
+  <p class="error" role="alert">{{ error }}</p>
   }
 
   @if (!loading && !error && politicians.length === 0) {
-  <p class="status empty">
-    Nenhum político selecionado ainda. Use a busca acima para adicionar até 3.
-  </p>
+  <div class="empty-state" role="status" aria-live="polite">
+    <p class="empty-title">Nenhum político selecionado ainda.</p>
+    <p class="empty-hint">
+      Use a busca acima para adicionar até 3 deputados. Os dados aparecem em paralelo
+      para facilitar a leitura.
+    </p>
+  </div>
   }
 
   @if (loading && selected.length) {
@@ -120,8 +124,8 @@
 
   @if (!loading && politicians.length) {
   <div class="results-grid">
-    @for (p of politicians; track p.id; let i = $index) {
-    <article class="result-card" [class]="'accent-' + (i % 3)">
+    @for (p of politicians; track p.id) {
+    <article class="result-card">
       <div class="accent-bar"></div>
       <div class="card-body">
         <h2><a [routerLink]="['/politicians', p.id]">{{ p.name }}</a></h2>
@@ -140,7 +144,7 @@
               </svg>
               Gastos
             </dt>
-            <dd>{{ p.totalExpenses | currency: 'BRL' }}</dd>
+            <dd>{{ p.totalExpenses | currency: 'BRL':'symbol':'1.0-0' }}</dd>
           </div>
           <div class="stat-row">
             <dt>
@@ -163,7 +167,7 @@
             </dt>
             <dd>
               @if (p.latestAssetValue != null) {
-              {{ p.latestAssetValue | currency: 'BRL' }}
+              {{ p.latestAssetValue | currency: 'BRL':'symbol':'1.0-0' }}
               @if (p.assetYear) { <span class="year">({{ p.assetYear }})</span> }
               } @else {
               —

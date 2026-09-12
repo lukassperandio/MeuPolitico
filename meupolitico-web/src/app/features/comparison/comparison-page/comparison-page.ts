@@ -60,7 +60,7 @@ export class ComparisonPageComponent {
         }),
         takeUntilDestroyed(this.destroyRef)
       )
-            .subscribe((results) => {
+      .subscribe((results) => {
         this.suggestions = results;
         this.suggestionsLoading = false;
 
@@ -72,7 +72,7 @@ export class ComparisonPageComponent {
       });
   }
 
-    onFocus(): void {
+  onFocus(): void {
     this.focused = true;
     this.showSuggestions = this.suggestions.length > 0;
     this.cdr.markForCheck();
