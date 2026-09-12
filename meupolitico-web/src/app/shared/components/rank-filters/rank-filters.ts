@@ -74,4 +74,18 @@ export class RankFiltersComponent implements OnInit {
       order: v.order
     });
   }
+
+  reset(): void {
+    this.form.reset(
+      {
+        name: '',
+        party: '',
+        startDate: '',
+        endDate: '',
+        order: 'desc'
+      },
+      { emitEvent: false }
+    );
+    this.emit();
+  }
 }

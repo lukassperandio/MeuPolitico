@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { RankingService } from '../../../core/services/ranking.service';
@@ -30,6 +30,8 @@ type RankingType = 'expenses' | 'attendance' | 'assets';
 export class RankingPageComponent implements OnInit {
   private readonly rankingService = inject(RankingService);
   private readonly cdr = inject(ChangeDetectorRef);
+
+  @ViewChild(RankFiltersComponent) private rankFilters?: RankFiltersComponent;
 
   type: RankingType = 'expenses';
   items: RankingItem[] = [];
@@ -74,6 +76,10 @@ export class RankingPageComponent implements OnInit {
 
   onPageChange(page: number): void {
     this.page = page;
+  }
+
+  clearFilters(): void {
+    this.rankFilters?.reset();
   }
 
   load(): void {
