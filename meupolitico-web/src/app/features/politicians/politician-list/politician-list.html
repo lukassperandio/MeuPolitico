@@ -1,15 +1,26 @@
-<section class="page list-page">
-  <p class="eyebrow">Transparência federal</p>
-  <h1>Quem você quer <span>fiscalizar</span> hoje?</h1>
+<section class="list-page">
+  <header class="page-head">
+    <p class="eyebrow">Transparência federal</p>
+    <h1>Quem você quer <em>fiscalizar</em> hoje?</h1>
+    <p class="subtitle">
+      Consulte gastos, presença e patrimônio dos deputados federais em exercício.
+    </p>
+  </header>
 
-  <div class="searchbar">
+  <div class="searchbar" role="search">
+    <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+      <circle cx="11" cy="11" r="7"></circle>
+      <line x1="21" y1="21" x2="16.5" y2="16.5"></line>
+    </svg>
     <input type="search" [formControl]="searchControl" placeholder="Nome, partido ou estado…"
       aria-label="Buscar político por nome, partido ou estado" />
   </div>
 
   @if (state$ | async; as state) {
+
   @if (state.loading) {
-  <p class="muted" role="status" aria-live="polite">Carregando...</p>
+  <p class="muted" role="status" aria-live="polite">Carregando…</p>
   }
 
   @if (state.error) {
@@ -39,26 +50,38 @@
   }
 
   @if (!state.loading && !state.error && state.politicians.length > 0) {
+  <p class="results-count">
+    <strong>{{ state.totalElements }}</strong>
+    {{ state.totalElements === 1 ? 'resultado' : 'resultados' }}
+  </p>
+
   <div class="cards">
     @for (p of state.politicians; track p.id) {
-    <a class="pol-card" [routerLink]="['/politicians', p.id]" [style.borderLeftColor]="p.party | partyColor">
+    <a class="pol-card" [routerLink]="['/politicians', p.id]">
       @if (p.photoUrl) {
-      <img class="avatar" [src]="p.photoUrl" [alt]="p.name" />
+      <img class="avatar" [src]="p.photoUrl" [alt]="p.name" loading="lazy" />
       } @else {
       <div class="avatar placeholder" [style.background]="p.party | partyColor">
         {{ p.name.charAt(0) }}
       </div>
       }
+
       <div class="info">
-        <div class="n">{{ p.name }}</div>
-        <div class="m">
+        <span class="n">{{ p.name }}</span>
+        <span class="m">
           <span class="party-tag">{{ p.party }}</span>
-          {{ p.position }} · {{ p.state }}
-        </div>
-        <div class="m">
-          <span class="source-chip">Câmara</span>
-        </div>
+          <span>{{ p.position }}</span>
+          <span class="dot">·</span>
+          <span>{{ p.state }}</span>
+        </span>
       </div>
+
+      <span class="arrow" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+          stroke-linecap="round">
+          <polyline points="9 6 15 12 9 18"></polyline>
+        </svg>
+      </span>
     </a>
     }
   </div>
