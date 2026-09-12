@@ -1,97 +1,126 @@
 <section class="detail">
 
   @if (loading) {
-  <p>Carregando...</p>
+  <p class="muted" role="status" aria-live="polite">Carregando perfil…</p>
   }
 
   @if (error) {
-  <p class="error">{{ error }}</p>
+  <p class="error" role="alert">{{ error }}</p>
   }
+
   @if (!loading && politician; as p) {
-  <a routerLink="/politicians" class="back">← Voltar</a>
+
+  <a routerLink="/politicians" class="back">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+      stroke-linecap="round" aria-hidden="true">
+      <polyline points="15 6 9 12 15 18"></polyline>
+    </svg>
+    Voltar para a lista
+  </a>
 
   <header class="profile-head">
     @if (p.photoUrl) {
     <img [src]="p.photoUrl" [alt]="p.name" />
+    } @else {
+    <div class="photo-placeholder">{{ p.name.charAt(0) }}</div>
     }
-    <div>
+    <div class="profile-info">
+      <p class="eyebrow">Deputado federal</p>
       <h1>{{ p.name }}</h1>
-      <p class="meta">{{ p.position }} · {{ p.party }} · {{ p.state }}</p>
-      @if (p.status) {
-      <p class="meta">{{ p.status }}</p>
-      }
+      <p class="meta">
+        <span class="party-tag">{{ p.party }}</span>
+        <span>{{ p.state }}</span>
+        @if (p.status) {
+        <span class="dot">·</span>
+        <span>{{ p.status }}</span>
+        }
+      </p>
     </div>
   </header>
 
-  <!-- ASSIDUIDADE -->
   <section class="block">
-    <h2>Assiduidade</h2>
+    <header class="block-head">
+      <p class="eyebrow">Assiduidade</p>
+      <h2>Presenças registadas</h2>
+    </header>
+
     <p class="note">
-      Fonte: presenças registadas em eventos da Câmara. O ficheiro oficial lista quem esteve presente
-      (não publica lista completa de faltas).
+      <strong>Fonte:</strong> presenças registadas em eventos da Câmara. O ficheiro oficial
+      lista quem esteve presente — não publica lista completa de faltas.
     </p>
+
     @if (presenceCount > 0 && attendanceSummary; as s) {
-    <p>
-      <strong>{{ s.present ?? presenceCount }}</strong> presenças
-      em <strong>{{ s.totalSessions }}</strong> eventos registados
-      @if (s.attendancePercentage != null) {
-      ({{ s.attendancePercentage | number: '1.0-1' }}%)
-      }
-    </p>
-    <p class="hint">
-      % = presenças ÷ total de eventos distintos no ficheiro da Câmara.
-    </p>
+    <div class="attendance-stat">
+      <p class="attendance-num">
+        {{ s.attendancePercentage != null ? (s.attendancePercentage | number: '1.0-1') + '%' : '—' }}
+      </p>
+      <p class="attendance-detail">
+        <strong>{{ s.present ?? presenceCount }}</strong> presenças
+        em <strong>{{ s.totalSessions }}</strong> eventos registados
+      </p>
+      <p class="hint">
+        % = presenças ÷ total de eventos distintos no ficheiro da Câmara.
+      </p>
+    </div>
     } @else {
-    <p>Sem dados de presença para este político.</p>
+    <p class="muted">Sem dados de presença para este político.</p>
     }
   </section>
 
-  <!-- PATRIMÓNIO -->
   <section class="block">
-    <h2>Patrimônio</h2>
+    <header class="block-head">
+      <p class="eyebrow">Patrimônio declarado</p>
+      <h2>Evolução dos bens</h2>
+    </header>
+
     <p class="note">
-      Declaração de bens ao <strong>TSE</strong> no registo de candidatura
+      <strong>Fonte:</strong> declaração de bens ao <strong>TSE</strong> no registo de candidatura
       (eleições, em regra de 4 em 4 anos — ex.: 2022 e 2026).
-      <strong>Não há atualização oficial anualmente</strong> durante o mandato.
+      <strong>Não há atualização oficial anual</strong> durante o mandato.
     </p>
+
     @if (assetEvolution?.points?.length) {
-    <ul>
+    <ul class="asset-list">
       @for (pt of assetEvolution!.points; track pt.year) {
       <li>
-        <strong>{{ pt.year }}</strong>:
-        {{ pt.declaredValue | currency: 'BRL' }}
+        <span class="asset-year">{{ pt.year }}</span>
+        <span class="asset-value">{{ pt.declaredValue | currency: 'BRL' }}</span>
         @if (pt.variationPercentage != null) {
-        ({{ pt.variationPercentage | number: '1.1-1' }}%)
+        <span class="asset-var" [class.is-up]="pt.variationPercentage > 0" [class.is-down]="pt.variationPercentage < 0">
+          {{ pt.variationPercentage > 0 ? '+' : '' }}{{ pt.variationPercentage | number: '1.1-1' }}%
+        </span>
         }
       </li>
       }
     </ul>
     } @else {
-    <p>Sem declaração de bens associada a este político.</p>
+    <p class="muted">Sem declaração de bens associada a este político.</p>
     }
   </section>
 
-  <!-- GASTOS -->
-  <section class="expenses block">
-    <h2>Gastos</h2>
+  <section class="block expenses">
+    <header class="block-head">
+      <p class="eyebrow">Gastos</p>
+      <h2>Cota parlamentar (CEAP)</h2>
+    </header>
 
     @if (expenseTotals; as t) {
     <div class="totals-grid">
       <div class="total-card">
-        <span class="label">Geral</span>
-        <strong>{{ t.totalAll | currency: 'BRL' }}</strong>
+        <span class="label">Total geral</span>
+        <strong>{{ t.totalAll | currency: 'BRL':'symbol':'1.0-0' }}</strong>
       </div>
       <div class="total-card">
         <span class="label">Neste ano ({{ t.year }})</span>
-        <strong>{{ t.totalYear | currency: 'BRL' }}</strong>
+        <strong>{{ t.totalYear | currency: 'BRL':'symbol':'1.0-0' }}</strong>
       </div>
       <div class="total-card">
-        <span class="label">Mandato (desde {{ t.mandateStart | date: 'MM/yyyy' }})</span>
-        <strong>{{ t.totalMandate | currency: 'BRL' }}</strong>
+        <span class="label">Mandato desde {{ t.mandateStart | date: 'MM/yyyy' }}</span>
+        <strong>{{ t.totalMandate | currency: 'BRL':'symbol':'1.0-0' }}</strong>
       </div>
     </div>
     }
-
+    
     @if (monthlyBars.length) {
     <div class="month-chart" aria-label="Gastos por mês">
       @for (m of monthlyBars; track m.month) {
@@ -107,29 +136,67 @@
     }
 
     <form class="filters" [formGroup]="filterForm" (ngSubmit)="applyFilters()">
-      <input type="text" formControlName="supplier" placeholder="Fornecedor / empresa" />
-      <input type="date" formControlName="startDate" title="Data inicial" />
-      <input type="date" formControlName="endDate" title="Data final" />
-      <input type="number" formControlName="minAmount" placeholder="Valor mínimo" step="0.01" />
-      <select formControlName="sort">
-        <option value="date,desc">Data (mais recente)</option>
-        <option value="date,asc">Data (mais antiga)</option>
-        <option value="amount,desc">Valor (maior)</option>
-        <option value="amount,asc">Valor (menor)</option>
-        <option value="supplier,asc">Empresa (A–Z)</option>
-        <option value="supplier,desc">Empresa (Z–A)</option>
-      </select>
-      <button type="submit">Filtrar</button>
-      <button type="button" class="secondary" (click)="clearFilters()">Limpar</button>
+      <label class="field">
+        <span class="field-label">Fornecedor</span>
+        <input type="text" formControlName="supplier" placeholder="Nome ou parte" />
+      </label>
+
+      <label class="field">
+        <span class="field-label">Data inicial</span>
+        <input type="date" formControlName="startDate" />
+      </label>
+
+      <label class="field">
+        <span class="field-label">Data final</span>
+        <input type="date" formControlName="endDate" />
+      </label>
+
+      <label class="field">
+        <span class="field-label">Valor mínimo (R$)</span>
+        <input type="number" formControlName="minAmount" placeholder="0,00" step="0.01" min="0" />
+      </label>
+
+      <label class="field">
+        <span class="field-label">Ordenar por</span>
+        <select formControlName="sort">
+          <option value="date,desc">Data (mais recente)</option>
+          <option value="date,asc">Data (mais antiga)</option>
+          <option value="amount,desc">Valor (maior)</option>
+          <option value="amount,asc">Valor (menor)</option>
+          <option value="supplier,asc">Empresa (A–Z)</option>
+          <option value="supplier,desc">Empresa (Z–A)</option>
+        </select>
+      </label>
+
+      <div class="filters-actions">
+        <button type="button" class="btn-secondary" (click)="clearFilters()">
+          Limpar filtros
+        </button>
+      </div>
     </form>
 
+    <p class="filter-hint">Os filtros aplicam automaticamente.</p>
+
     <div class="summary">
-      <p><strong>{{ totalElements }}</strong> despesas (filtro atual)</p>
-      <p>Soma (itens carregados): <strong>{{ loadedTotalAmount | currency: 'BRL' }}</strong></p>
+      <p>
+        <strong>{{ totalElements }}</strong>
+        {{ totalElements === 1 ? 'despesa no filtro atual' : 'despesas no filtro atual' }}
+      </p>
+      @if (expenses.length > 0) {
+      <p>
+        Soma dos itens carregados:
+        <strong>{{ loadedTotalAmount | currency: 'BRL' }}</strong>
+      </p>
+      }
     </div>
 
     @if (expenses.length === 0 && !expensesLoading) {
-    <p>Nenhuma despesa encontrada com estes filtros.</p>
+    <div class="empty-state">
+      <p class="empty-title">Nenhuma despesa encontrada.</p>
+      <p class="empty-hint">
+        Tente ajustar ou limpar os filtros acima.
+      </p>
+    </div>
     } @else {
     <div class="table-scroll">
       <table>
@@ -138,16 +205,16 @@
             <th>Data</th>
             <th>Categoria</th>
             <th>Fornecedor</th>
-            <th>Valor</th>
+            <th class="col-amount">Valor</th>
           </tr>
         </thead>
         <tbody>
           @for (e of expenses; track e.id) {
           <tr>
-            <td>{{ e.date | date: 'dd/MM/yyyy' }}</td>
-            <td>{{ e.category | expenseCategoryLabel }}</td>
-            <td>{{ e.supplier || '—' }}</td>
-            <td class="amount">{{ e.amount | currency: 'BRL' }}</td>
+            <td class="col-date">{{ e.date | date: 'dd/MM/yyyy' }}</td>
+            <td class="col-category">{{ e.category | expenseCategoryLabel }}</td>
+            <td class="col-supplier">{{ e.supplier || '—' }}</td>
+            <td class="col-amount amount">{{ e.amount | currency: 'BRL' }}</td>
           </tr>
           }
         </tbody>
@@ -156,9 +223,11 @@
 
     @if (hasMore) {
     <button type="button" class="load-more" [disabled]="expensesLoading" (click)="loadMore()">
-      {{ expensesLoading ? 'A carregar...' : 'Carregar mais' }}
+      {{ expensesLoading ? 'Carregando…' : 'Carregar mais' }}
     </button>
     }
     }
   </section>
+
   }
+</section>
