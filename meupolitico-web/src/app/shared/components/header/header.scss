@@ -1,0 +1,199 @@
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: #fff;
+}
+
+.utility-bar {
+  background: var(--bg-soft);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.78rem;
+  color: var(--muted);
+
+  .inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0.45rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+}
+
+.utility-note {
+  margin: 0;
+}
+
+.main-bar {
+  border-bottom: 1px solid var(--border);
+
+  .inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  text-decoration: none;
+  min-width: 0;
+}
+
+.brand-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+  display: block;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+  min-width: 0;
+}
+
+.brand-name {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: var(--gov-blue-dark);
+  letter-spacing: -0.01em;
+
+  span {
+    color: #b88200;
+  }
+}
+
+.brand-tag {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 0.15rem;
+}
+
+.menu-toggle {
+  display: none;
+  padding: 0.5rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--gov-blue-dark);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--gov-blue-pale);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--gov-blue);
+    outline-offset: 2px;
+  }
+}
+
+.primary-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+
+  a {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--gov-blue);
+    padding: 0.5rem 0.85rem;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: color 0.12s ease, border-color 0.12s ease;
+
+    &:hover {
+      color: var(--gov-blue-dark);
+      border-bottom-color: var(--gov-blue-pale);
+    }
+
+    &.active {
+      color: var(--gov-blue-dark);
+      font-weight: 700;
+      border-bottom-color: var(--gov-yellow);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--gov-blue);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .utility-bar {
+    display: none;
+  }
+
+  .main-bar .inner {
+    padding: 0.65rem 1rem;
+    flex-wrap: wrap;
+  }
+
+  .menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .primary-nav {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border);
+    margin-top: 0.5rem;
+
+    &.is-open {
+      display: flex;
+    }
+
+    a {
+      padding: 0.8rem 0.5rem;
+      border-bottom: none;
+      border-left: 3px solid transparent;
+      border-radius: 0;
+
+      &:hover {
+        background: var(--gov-blue-pale);
+        border-left-color: var(--gov-blue);
+        border-bottom-color: transparent;
+      }
+
+      &.active {
+        background: var(--gov-blue-pale);
+        border-left-color: var(--gov-yellow);
+        border-bottom-color: transparent;
+      }
+    }
+  }
+
+  .brand-logo {
+    width: 38px;
+    height: 38px;
+  }
+
+  .brand-name {
+    font-size: 1.05rem;
+  }
+
+  .brand-tag {
+    font-size: 0.68rem;
+  }
+}

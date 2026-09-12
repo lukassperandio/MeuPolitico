@@ -1,0 +1,47 @@
+<header class="site-header">
+
+  <div class="utility-bar">
+    <div class="inner">
+      <p class="utility-note">
+        Fontes oficiais — Câmara dos Deputados e TSE
+      </p>
+    </div>
+  </div>
+
+  <div class="main-bar">
+    <div class="inner">
+
+      <a routerLink="/" class="brand" aria-label="MeuPolítico — início">
+        <img src="/logo.png" alt="" class="brand-logo" width="44" height="44" />
+        <span class="brand-text">
+          <span class="brand-name">Meu<span>Político</span></span>
+          <span class="brand-tag">Transparência federal</span>
+        </span>
+      </a>
+
+      <button type="button" class="menu-toggle" (click)="toggleMenu()" [attr.aria-expanded]="menuOpen()"
+        aria-controls="primary-nav" [attr.aria-label]="menuOpen() ? 'Fechar menu' : 'Abrir menu'">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+          stroke-linecap="round" aria-hidden="true">
+          @if (menuOpen()) {
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+          } @else {
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+          }
+        </svg>
+      </button>
+
+      <nav id="primary-nav" class="primary-nav" [class.is-open]="menuOpen()" aria-label="Principal">
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+          (click)="closeMenu()">Início</a>
+        <a routerLink="/politicians" routerLinkActive="active" (click)="closeMenu()">Consultas</a>
+        <a routerLink="/rankings" routerLinkActive="active" (click)="closeMenu()">Rankings</a>
+        <a routerLink="/compare" routerLinkActive="active" (click)="closeMenu()">Comparar</a>
+      </nav>
+
+    </div>
+  </div>
+</header>
