@@ -75,7 +75,7 @@
         {{ s.attendancePercentage != null ? (s.attendancePercentage | number: '1.0-1') + '%' : '—' }}
       </p>
       <p class="attendance-detail">
-        <strong>{{ s.present ?? presenceCount }}</strong> presenças
+        <strong>{{ s.present  }}</strong> presenças
         em <strong>{{ s.totalSessions }}</strong> eventos registados
       </p>
       <p class="hint">

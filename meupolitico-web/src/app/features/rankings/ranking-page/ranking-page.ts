@@ -3,7 +3,6 @@ import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { RankingService } from '../../../core/services/ranking.service';
 import { RankingItem } from '../../../core/models/ranking.model';
-import { PartyColorPipe } from '../../../shared/pipes/party-color-pipe';
 import { PagerComponent } from '../../../shared/components/pager/pager';
 import {
   RankFiltersComponent,
@@ -20,7 +19,6 @@ type RankingType = 'expenses' | 'attendance' | 'assets';
     RouterLink,
     CurrencyPipe,
     DecimalPipe,
-    PartyColorPipe,
     PagerComponent,
     RankFiltersComponent
   ],

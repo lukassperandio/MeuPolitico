@@ -309,49 +309,50 @@
     font-size: 0.95rem;
   }
 
-  &.skeleton-rank {
-    li {
-      pointer-events: none;
+}
+
+.skeleton-rank {
+  li {
+    pointer-events: none;
+  }
+
+  .pos {
+    background: none;
+    color: transparent;
+    border-radius: 6px;
+    width: 30px;
+    height: 30px;
+  }
+
+  .sk-lines {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .sk-line {
+    &.small {
+      height: 10px;
     }
 
-    .pos {
-      background: none;
-      color: transparent;
-      border-radius: 6px;
-      width: 30px;
-      height: 30px;
+    &.w-20 {
+      width: 20%;
     }
 
-    .sk-lines {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 0.45rem;
+    &.w-40 {
+      width: 40%;
     }
 
-    .sk-line {
-      &.small {
-        height: 10px;
-      }
-
-      &.w-20 {
-        width: 20%;
-      }
-
-      &.w-40 {
-        width: 40%;
-      }
-
-      &.w-60 {
-        width: 60%;
-      }
+    &.w-60 {
+      width: 60%;
     }
+  }
 
-    .value-sk {
-      width: 80px;
-      flex-shrink: 0;
-    }
+  .value-sk {
+    width: 80px;
+    flex-shrink: 0;
   }
 }
 
