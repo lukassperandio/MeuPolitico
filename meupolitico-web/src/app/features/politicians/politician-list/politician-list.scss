@@ -183,6 +183,26 @@
   }
 }
 
+.pol-card.is-skeleton {
+  pointer-events: none;
+  cursor: default;
+
+  &:hover {
+    background: #fff;
+  }
+
+  .avatar-sk {
+    border-radius: 50%;
+    border: none;
+  }
+
+  .sk-line {
+    &.small { height: 10px; margin-top: 0.35rem; }
+    &.w-40  { width: 40%; }
+    &.w-60  { width: 60%; }
+  }
+}
+
 .avatar {
   width: 48px;
   height: 48px;

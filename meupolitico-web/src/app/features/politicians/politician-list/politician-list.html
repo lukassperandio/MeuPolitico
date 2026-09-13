@@ -19,9 +19,20 @@
 
   @if (state$ | async; as state) {
 
-  @if (state.loading) {
-  <p class="muted" role="status" aria-live="polite">Carregando…</p>
-  }
+      @if (state.loading) {
+      <div class="cards" role="status" aria-live="polite">
+        <span class="sr-only">Carregando políticos…</span>
+        @for (i of [1, 2, 3, 4, 5, 6, 7, 8]; track i) {
+          <div class="pol-card is-skeleton">
+            <span class="avatar sk-block avatar-sk"></span>
+            <div class="info">
+              <span class="sk-line w-60"></span>
+              <span class="sk-line small w-40"></span>
+            </div>
+          </div>
+        }
+      </div>
+    }
 
   @if (state.error) {
   <p class="error" role="alert">{{ state.error }}</p>

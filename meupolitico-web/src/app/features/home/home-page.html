@@ -60,7 +60,19 @@
     </div>
 
     @if (loading) {
-    <p class="muted">Carregando…</p>
+    <ol class="preview-rank skeleton-rank" role="status" aria-live="polite">
+      <span class="sr-only">Carregando ranking…</span>
+      @for (i of [1, 2, 3, 4, 5]; track i) {
+      <li>
+        <span class="pos sk-block"></span>
+        <span class="sk-lines">
+          <span class="sk-line w-60"></span>
+          <span class="sk-line small w-40"></span>
+        </span>
+        <span class="sk-line w-20 value-sk"></span>
+      </li>
+      }
+    </ol>
     } @else if (topExpenses.length === 0) {
     <p class="muted">Sem dados de ranking no momento.</p>
     } @else {

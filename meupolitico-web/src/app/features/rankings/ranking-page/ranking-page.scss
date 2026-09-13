@@ -160,6 +160,35 @@
   }
 }
 
+.rank-item.is-skeleton {
+  pointer-events: none;
+
+  &:hover {
+    background: transparent;
+  }
+
+  .pos {
+    background: none;
+    color: transparent;
+  }
+
+  .rank-link {
+    gap: 0.4rem;
+  }
+
+  .sk-line {
+    &.small { height: 10px; }
+    &.w-15  { width: 15%; }
+    &.w-30  { width: 30%; }
+    &.w-50  { width: 50%; }
+  }
+
+  .value-sk {
+    width: 80px;
+    flex-shrink: 0;
+  }
+}
+
 .pos {
   width: 34px;
   height: 34px;

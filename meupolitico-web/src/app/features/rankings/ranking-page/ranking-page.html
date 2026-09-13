@@ -42,7 +42,19 @@
   <app-rank-filters (filtersChange)="onFiltersChange($event)" />
 
   @if (loading) {
-  <p class="muted" role="status" aria-live="polite">Carregando ranking…</p>
+  <ol class="ranking" role="status" aria-live="polite">
+    <span class="sr-only">Carregando ranking…</span>
+    @for (i of [1, 2, 3, 4, 5, 6, 7, 8]; track i) {
+    <li class="rank-item is-skeleton">
+      <span class="pos sk-block"></span>
+      <div class="rank-link">
+        <span class="sk-line w-50"></span>
+        <span class="sk-line small w-30"></span>
+      </div>
+      <span class="sk-line w-15 value-sk"></span>
+    </li>
+    }
+  </ol>
   }
 
   @if (error) {
