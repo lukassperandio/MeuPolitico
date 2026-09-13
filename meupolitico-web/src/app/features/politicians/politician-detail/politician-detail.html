@@ -1,7 +1,27 @@
 <section class="detail">
 
   @if (loading) {
-  <p class="muted" role="status" aria-live="polite">Carregando perfil…</p>
+  <div class="skeleton-page" role="status" aria-live="polite">
+    <span class="sr-only">Carregando perfil…</span>
+
+    <div class="skeleton-head">
+      <div class="sk-photo"></div>
+      <div class="sk-lines">
+        <div class="sk-line w-20"></div>
+        <div class="sk-line tall w-60"></div>
+        <div class="sk-line w-40"></div>
+      </div>
+    </div>
+
+    @for (i of [1, 2, 3]; track i) {
+    <div class="skeleton-block">
+      <div class="sk-line w-30"></div>
+      <div class="sk-line w-90"></div>
+      <div class="sk-line w-80"></div>
+      <div class="sk-line w-70"></div>
+    </div>
+    }
+  </div>
   }
 
   @if (error) {
@@ -120,7 +140,7 @@
       </div>
     </div>
     }
-    
+
     @if (monthlyBars.length) {
     <div class="month-chart" aria-label="Gastos por mês">
       @for (m of monthlyBars; track m.month) {
