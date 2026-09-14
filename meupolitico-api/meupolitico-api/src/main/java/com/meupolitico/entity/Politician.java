@@ -66,6 +66,9 @@ public class Politician {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "mandate_start")
+    private LocalDate mandateStart;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();

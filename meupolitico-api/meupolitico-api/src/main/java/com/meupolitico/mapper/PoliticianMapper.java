@@ -39,7 +39,8 @@ public class PoliticianMapper {
                 politician.getBirthDate(),
                 politician.getGender(),
                 politician.getCreatedAt(),
-                politician.getUpdatedAt()
+                politician.getUpdatedAt(),
+                politician.getMandateStart()
         );
     }
 }

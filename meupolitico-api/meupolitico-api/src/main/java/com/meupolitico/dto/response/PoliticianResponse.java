@@ -17,6 +17,7 @@ public record PoliticianResponse(
         LocalDate birthDate,
         Gender gender,
         LocalDateTime createdAt,
-        LocalDateTime updatedAt
+        LocalDateTime updatedAt,
+        LocalDate mandateStart
 ) {
 }

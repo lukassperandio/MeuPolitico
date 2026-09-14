@@ -1,10 +1,14 @@
 package com.meupolitico.integration.camara;
 
+import com.meupolitico.integration.camara.dto.CamaraDeputyDetail;
+import com.meupolitico.integration.camara.dto.CamaraDeputyDetailResponse;
 import com.meupolitico.integration.camara.dto.CamaraDeputyListResponse;
 import com.meupolitico.integration.camara.dto.CamaraDeputySummary;
 import com.meupolitico.integration.camara.dto.CamaraExpenseItem;
 import com.meupolitico.integration.camara.dto.CamaraExpenseListResponse;
 import com.meupolitico.integration.camara.dto.CamaraLink;
+import com.meupolitico.integration.camara.dto.CamaraMandateItem;
+import com.meupolitico.integration.camara.dto.CamaraMandateListResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
@@ -91,5 +95,31 @@ public class CamaraDeputyClient {
         }
 
         return allExpenses;
+    }
+
+    public List<CamaraMandateItem> fetchMandates(Long deputyId) {
+        CamaraMandateListResponse response = camaraRestClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/deputados/{id}/mandatos")
+                        .build(deputyId))
+                .retrieve()
+                .body(CamaraMandateListResponse.class);
+
+        if (response == null || response.dados() == null) {
+            return List.of();
+        }
+        return response.dados();
+    }
+
+    public CamaraDeputyDetail fetchDeputyDetail(Long deputyId) {
+        CamaraDeputyDetailResponse response = camaraRestClient.get()
+                .uri("/deputados/{id}", deputyId)
+                .retrieve()
+                .body(CamaraDeputyDetailResponse.class);
+
+        if (response == null) {
+            return null;
+        }
+        return response.dados();
     }
 }

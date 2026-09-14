@@ -1,8 +1,8 @@
 package com.meupolitico.service;
 
 import com.meupolitico.entity.Politician;
-import com.meupolitico.enums.Gender;
 import com.meupolitico.integration.camara.CamaraDeputyClient;
+import com.meupolitico.integration.camara.dto.CamaraDeputyDetail;
 import com.meupolitico.integration.camara.dto.CamaraDeputySummary;
 import com.meupolitico.repository.PoliticianRepository;
 import org.slf4j.Logger;
@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -34,13 +35,14 @@ public class CamaraSyncService {
         int savedOrUpdated = 0;
 
         for (CamaraDeputySummary deputy : deputies) {
-            String externalId = String.valueOf(deputy.id());
 
+            String externalId = String.valueOf(deputy.id());
             Politician politician = politicianRepository.findByExternalId(externalId)
                     .orElseGet(Politician::new);
 
             politician.setExternalId(externalId);
             politician.setName(deputy.nome());
+
             politician.setBallotName(deputy.nome());
             politician.setPhotoUrl(deputy.urlFoto());
             politician.setParty(deputy.siglaPartido());
@@ -48,8 +50,8 @@ public class CamaraSyncService {
             politician.setPosition("Deputado Federal");
             politician.setStatus("Ativo");
 
-            if (politician.getGender() == null) {
-                politician.setGender(Gender.NOT_INFORMED);
+            if (politician.getMandateStart() == null) {
+                politician.setMandateStart(resolveMandateStart(deputy.id()));
             }
 
             politicianRepository.save(politician);
@@ -58,5 +60,22 @@ public class CamaraSyncService {
 
         log.info("Sync finished. {} politicians saved/updated", savedOrUpdated);
         return savedOrUpdated;
+    }
+
+    private LocalDate resolveMandateStart(Long deputyId) {
+        try {
+            CamaraDeputyDetail detail = camaraDeputyClient.fetchDeputyDetail(deputyId);
+            if (detail == null || detail.ultimoStatus() == null
+                    || detail.ultimoStatus().data() == null) {
+                return null;
+            }
+
+            String raw = detail.ultimoStatus().data();
+            return LocalDate.parse(raw.substring(0, 10));
+
+        } catch (Exception e) {
+            log.warn("Failed to fetch detail for deputy {}: {}", deputyId, e.getMessage());
+            return null;
+        }
     }
 }
