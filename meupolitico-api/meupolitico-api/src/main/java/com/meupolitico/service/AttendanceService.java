@@ -134,31 +134,31 @@ public class AttendanceService {
     public AttendanceSummaryResponse getSummary(Long politicianId,
                                                 LocalDate startDate,
                                                 LocalDate endDate) {
-        if (!politicianRepository.existsById(politicianId)) {
-            throw new ResourceNotFoundException("Politician not found with id: " + politicianId);
+        Politician politician = politicianRepository.findById(politicianId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Politician not found with id: " + politicianId));
+
+        LocalDate mandateStart = politician.getMandateStart();
+
+        LocalDate effectiveStart = mandateStart;
+        if (startDate != null && (effectiveStart == null || startDate.isAfter(effectiveStart))) {
+            effectiveStart = startDate;
         }
 
-        long totalSessions;
-        if (startDate != null || endDate != null) {
-            totalSessions = attendanceRepository.countDistinctEventsBetween(startDate, endDate);
-        } else {
-            totalSessions = attendanceRepository.countDistinctEvents();
-        }
-
-        long present = attendanceRepository.countDistinctPresentSessions(politicianId);
+        long totalSessions = attendanceRepository.countDistinctEventsBetween(effectiveStart, endDate);
+        long present = attendanceRepository.countDistinctPresentSessionsBetween(
+                politicianId, effectiveStart, endDate);
 
         double percentage = totalSessions == 0 ? 0.0 : (present * 100.0) / totalSessions;
 
-        String name = politicianRepository.findById(politicianId)
-                .map(Politician::getName)
-                .orElse(null);
-
         return new AttendanceSummaryResponse(
                 politicianId,
-                name,
+                politician.getName(),
                 totalSessions,
                 present,
-                percentage
+                percentage,
+                mandateStart,
+                false
         );
     }
 }

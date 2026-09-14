@@ -28,7 +28,9 @@ public class AssetMapper {
                 asset.getYear(),
                 asset.getDeclaredValue(),
                 asset.getSource(),
-                asset.getCreatedAt()
+                asset.getCreatedAt(),
+                asset.getPolitician().getMandateStart(),
+                asset.getDeclaredValue() != null && asset.getYear() != null
         );
     }
 }
