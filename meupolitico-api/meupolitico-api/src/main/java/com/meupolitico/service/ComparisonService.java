@@ -1,15 +1,13 @@
 package com.meupolitico.service;
 
+import com.meupolitico.dto.response.AttendanceSummaryResponse;
 import com.meupolitico.dto.response.ComparedPoliticianResponse;
 import com.meupolitico.dto.response.ComparisonResponse;
 import com.meupolitico.entity.Asset;
-import com.meupolitico.entity.Attendance;
 import com.meupolitico.entity.Expense;
 import com.meupolitico.entity.Politician;
-import com.meupolitico.enums.AttendanceStatus;
 import com.meupolitico.exception.ResourceNotFoundException;
 import com.meupolitico.repository.AssetRepository;
-import com.meupolitico.repository.AttendanceRepository;
 import com.meupolitico.repository.ExpenseRepository;
 import com.meupolitico.repository.PoliticianRepository;
 import org.springframework.stereotype.Service;
@@ -26,16 +24,16 @@ public class ComparisonService {
 
     private final PoliticianRepository politicianRepository;
     private final ExpenseRepository expenseRepository;
-    private final AttendanceRepository attendanceRepository;
+    private final AttendanceService attendanceService;
     private final AssetRepository assetRepository;
 
     public ComparisonService(PoliticianRepository politicianRepository,
                              ExpenseRepository expenseRepository,
-                             AttendanceRepository attendanceRepository,
+                             AttendanceService attendanceService,
                              AssetRepository assetRepository) {
         this.politicianRepository = politicianRepository;
         this.expenseRepository = expenseRepository;
-        this.attendanceRepository = attendanceRepository;
+        this.attendanceService = attendanceService;
         this.assetRepository = assetRepository;
     }
 
@@ -56,14 +54,8 @@ public class ComparisonService {
                     .map(Expense::getAmount)
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-            List<Attendance> attendances = attendanceRepository.findByPoliticianId(id);
-            long totalSessions = attendances.size();
-            long present = attendances.stream()
-                    .filter(a -> a.getStatus() == AttendanceStatus.PRESENT)
-                    .count();
-            double attendancePercentage = totalSessions == 0
-                    ? 0.0
-                    : Math.round((present * 10000.0) / totalSessions) / 100.0;
+            AttendanceSummaryResponse attendance = attendanceService.getSummary(id, null, null);
+            double attendancePercentage = attendance.attendancePercentage();
 
             List<Asset> assets = assetRepository.findByPoliticianIdOrderByYearAsc(id);
             BigDecimal latestAssetValue = null;
