@@ -149,39 +149,94 @@
   }
 }
 
-.attendance-stat {
-  padding: 1.25rem 1.25rem 1.5rem;
+.attendance-panel {
   background: var(--bg-soft);
   border: 1px solid var(--border);
-  text-align: center;
+  padding: 1.5rem 1.5rem 1.35rem;
 }
 
-.attendance-num {
-  font-size: 3rem;
+.attendance-figures {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.attendance-fig {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.fig-value {
+  font-size: 2rem;
   font-weight: 800;
   color: var(--gov-blue-dark);
-  margin: 0;
+  letter-spacing: -0.03em;
   line-height: 1;
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.03em;
 }
 
-.attendance-detail {
-  margin: 0.75rem 0 0;
+.fig-label {
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.attendance-meter {
+  height: 10px;
+  background: #fff;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  margin-bottom: 0.85rem;
+}
+
+.meter-fill {
+  height: 100%;
+  background: var(--gov-blue);
+  transition: width 0.4s ease;
+}
+
+.attendance-pct {
+  margin: 0;
+  font-size: 0.9rem;
   color: var(--ink);
-  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
 
   strong {
     color: var(--gov-blue-dark);
-    font-variant-numeric: tabular-nums;
+    font-weight: 700;
   }
 }
 
-.hint {
-  margin: 0.75rem 0 0;
-  font-size: 0.78rem;
-  color: var(--muted);
-  line-height: 1.4;
+.attendance-warning {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding: 0.9rem 1rem;
+  background: #fff8e1;
+  border-left: 3px solid var(--gov-yellow);
+
+  svg {
+    color: #b88200;
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+  }
+
+  strong {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--gov-blue-dark);
+    margin-bottom: 0.3rem;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
 }
 
 .asset-list {
@@ -660,6 +715,15 @@
       color: var(--gov-blue-dark);
     }
   }
+
+  .attendance-figures {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .fig-value {
+    font-size: 1.6rem;
+  }
 }
 
 .skeleton-head {
@@ -696,15 +760,37 @@
   background-size: 200% 100%;
   animation: sk-shimmer 1.2s ease-in-out infinite;
 
-  &.tall { height: 22px; }
+  &.tall {
+    height: 22px;
+  }
 
-  &.w-20 { width: 20%; }
-  &.w-30 { width: 30%; }
-  &.w-40 { width: 40%; }
-  &.w-60 { width: 60%; }
-  &.w-70 { width: 70%; }
-  &.w-80 { width: 80%; }
-  &.w-90 { width: 90%; }
+  &.w-20 {
+    width: 20%;
+  }
+
+  &.w-30 {
+    width: 30%;
+  }
+
+  &.w-40 {
+    width: 40%;
+  }
+
+  &.w-60 {
+    width: 60%;
+  }
+
+  &.w-70 {
+    width: 70%;
+  }
+
+  &.w-80 {
+    width: 80%;
+  }
+
+  &.w-90 {
+    width: 90%;
+  }
 }
 
 .skeleton-block {
@@ -718,8 +804,13 @@
 }
 
 @keyframes sk-shimmer {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 

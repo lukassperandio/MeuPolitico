@@ -3,7 +3,7 @@ export interface AttendanceSummary {
   politicianName: string;
   totalSessions: number;
   present: number;
-  absent: number;
-  justified: number;
   attendancePercentage: number;
+  mandateStart: string | null;
+  dataComplete: boolean;
 }

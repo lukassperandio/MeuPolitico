@@ -64,24 +64,62 @@
       <h2>Presenças registadas</h2>
     </header>
 
-    <p class="note">
-      <strong>Fonte:</strong> presenças registadas em eventos da Câmara. O ficheiro oficial
-      lista quem esteve presente — não publica lista completa de faltas.
-    </p>
-
     @if (presenceCount > 0 && attendanceSummary; as s) {
-    <div class="attendance-stat">
-      <p class="attendance-num">
-        {{ s.attendancePercentage != null ? (s.attendancePercentage | number: '1.0-1') + '%' : '—' }}
+
+    <div class="attendance-panel">
+
+      <div class="attendance-figures">
+        <div class="attendance-fig">
+          <span class="fig-value">{{ s.present | number }}</span>
+          <span class="fig-label">presenças registadas</span>
+        </div>
+        <div class="attendance-fig">
+          <span class="fig-value">{{ s.totalSessions | number }}</span>
+          <span class="fig-label">
+            @if (s.mandateStart) {
+            eventos desde a posse · {{ s.mandateStart | date: 'dd/MM/yyyy' }}
+            } @else {
+            eventos registados
+            }
+          </span>
+        </div>
+      </div>
+
+      <div class="attendance-meter" role="img"
+        [attr.aria-label]="(s.attendancePercentage | number: '1.1-1') + '% dos eventos com presença registada'">
+        <div class="meter-fill" [style.width.%]="s.attendancePercentage"></div>
+      </div>
+
+      <p class="attendance-pct">
+        <strong>{{ s.attendancePercentage | number: '1.1-1' }}%</strong>
+        dos eventos desde a posse tiveram presença registada.
       </p>
-      <p class="attendance-detail">
-        <strong>{{ s.present  }}</strong> presenças
-        em <strong>{{ s.totalSessions }}</strong> eventos registados
-      </p>
-      <p class="hint">
-        % = presenças ÷ total de eventos distintos no ficheiro da Câmara.
-      </p>
+
     </div>
+
+    @if (!s.dataComplete) {
+    <div class="attendance-warning" role="note">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+        <line x1="12" y1="9" x2="12" y2="13"></line>
+        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+      </svg>
+      <div>
+        <strong>Por que este número não é uma nota</strong>
+        <p>
+          A fonte oficial lista presenças, não faltas. A Câmara realiza
+          eventos em paralelo (plenário, comissões, audiências), pelo que é
+          normal que ninguém esteja registado em todos.
+          @if (s.mandateStart) {
+          Sessões anteriores a {{ s.mandateStart | date: 'dd/MM/yyyy' }}
+          não são contabilizadas.
+          }
+        </p>
+      </div>
+    </div>
+    }
+
     } @else {
     <p class="muted">Sem dados de presença para este político.</p>
     }
