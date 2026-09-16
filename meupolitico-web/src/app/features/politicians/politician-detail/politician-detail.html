@@ -30,13 +30,13 @@
 
   @if (!loading && politician; as p) {
 
-  <a routerLink="/politicians" class="back">
+  <button type="button" class="back" (click)="goBack()">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
       stroke-linecap="round" aria-hidden="true">
       <polyline points="15 6 9 12 15 18"></polyline>
     </svg>
-    Voltar para a lista
-  </a>
+    Voltar
+  </button>
 
   <header class="profile-head">
     @if (p.photoUrl) {

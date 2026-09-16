@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, inject, OnInit, DestroyRef } from '@angular/core';
-import { CommonModule, CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
+import { CommonModule, CurrencyPipe, DatePipe, DecimalPipe, Location } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
@@ -39,6 +39,7 @@ export class PoliticianDetailComponent implements OnInit {
   private readonly assetService = inject(AssetService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly location = inject(Location);
 
   expenseTotals: ExpenseTotals | null = null;
 
@@ -253,5 +254,9 @@ export class PoliticianDetailComponent implements OnInit {
       total: Number(m.total) || 0,
       pct: ((Number(m.total) || 0) / max) * 100
     }));
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }

@@ -215,6 +215,9 @@ public class TseAssetImportService {
             return BigDecimal.ZERO;
         }
         // "1.234.567,89" ou "1234567.89"
+        // "1.234.567,89" ou "1234567.89"
+        // "1.234.567,89" ou "1234567.89"
+        // "1.234.567,89" ou "1234567.89"
         String n = raw.replace(".", "").replace(",", ".");
         try {
             return new BigDecimal(n);

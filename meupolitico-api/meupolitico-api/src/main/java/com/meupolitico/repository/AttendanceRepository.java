@@ -74,6 +74,13 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long>,
                                     @Param("end") LocalDate end);
 
     @Query(value = """
+    SELECT DISTINCT a.date, a.session_type
+    FROM attendance a
+    ORDER BY a.date
+    """, nativeQuery = true)
+        List<Object[]> findDistinctEvents();
+
+    @Query(value = """
     SELECT COUNT(*) FROM (
         SELECT DISTINCT date, session_type
         FROM attendance
@@ -117,4 +124,19 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long>,
         long countDistinctPresentSessionsBetween(@Param("politicianId") Long politicianId,
                                                  @Param("start") LocalDate start,
                                                  @Param("end") LocalDate end);
+
+        @Query(value = """
+    SELECT a.politician_id, COUNT(*) FROM (
+        SELECT DISTINCT a.politician_id, a.date, a.session_type
+        FROM attendance a
+        JOIN politician p ON p.id = a.politician_id
+        WHERE a.status = 'PRESENT'
+          AND (p.mandate_start IS NULL OR a.date >= p.mandate_start)
+          AND (CAST(:start AS date) IS NULL OR a.date >= CAST(:start AS date))
+          AND (CAST(:end AS date) IS NULL OR a.date <= CAST(:end AS date))
+    ) a
+    GROUP BY a.politician_id
+    """, nativeQuery = true)
+        List<Object[]> countPresentGroupedByPoliticianBetween(@Param("start") LocalDate start,
+                                                              @Param("end") LocalDate end);
 }
