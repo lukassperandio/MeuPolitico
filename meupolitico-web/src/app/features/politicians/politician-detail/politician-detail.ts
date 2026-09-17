@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component, inject, OnInit, DestroyRef } from '@angular/core';
 import { CommonModule, CurrencyPipe, DatePipe, DecimalPipe, Location } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { forkJoin, of } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { PoliticianService } from '../../../core/services/politician.service';
 import { ExpenseService } from '../../../core/services/expense.service';
@@ -21,7 +21,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
     ReactiveFormsModule,
     CurrencyPipe,
     DatePipe,
@@ -41,29 +40,28 @@ export class PoliticianDetailComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly location = inject(Location);
 
-  expenseTotals: ExpenseTotals | null = null;
-
   politician: Politician | null = null;
-  expenses: Expense[] = [];
+  politicianLoading = true;
+
   attendanceSummary: AttendanceSummary | null = null;
+  attendanceLoading = true;
+
   assetEvolution: AssetEvolution | null = null;
+  assetLoading = true;
 
-  loading = true;
-  expensesLoading = false;
-  error: string | null = null;
+  expenseTotals: ExpenseTotals | null = null;
+  totalsLoading = true;
 
+  monthlyBars: { month: string; total: number; pct: number }[] = [];
+  monthlyLoading = true;
+
+  expenses: Expense[] = [];
+  expensesLoading = true;
   page = 0;
   readonly pageSize = 20;
   totalElements = 0;
 
-  expenseTotal: {
-    politicianId: number;
-    totalAmount: number;
-    expenseCount: number;
-    lastExpenseDate: string | null;
-  } | null = null;
-
-  monthlyBars: { month: string; total: number; pct: number }[] = [];
+  error: string | null = null;
 
   readonly filterForm = new FormGroup({
     supplier: new FormControl('', { nonNullable: true }),
@@ -96,45 +94,96 @@ export class PoliticianDetailComponent implements OnInit {
 
     if (!id || Number.isNaN(id)) {
       this.error = 'ID inválido.';
-      this.loading = false;
+      this.politicianLoading = false;
       this.cdr.markForCheck();
       return;
     }
 
-    this.loading = true;
     this.error = null;
     this.cdr.markForCheck();
+    this.setupLiveFilters();
 
-    forkJoin({
-      politician: this.politicianService.findById(id),
-      expenses: this.expenseService.search({
-        politicianId: id,
-        page: 0,
-        size: this.pageSize,
-        sort: this.filterForm.controls.sort.value
-      }),
-      attendance: this.attendanceService.getSummary(id).pipe(catchError(() => of(null))),
-      assets: this.assetService.getEvolution(id).pipe(catchError(() => of(null))),
-      totals: this.expenseService.totalsByPolitician(id).pipe(catchError(() => of(null))),
-      monthly: this.expenseService.getMonthly(id).pipe(catchError(() => of(null)))
-    }).subscribe({
-      next: ({ politician, expenses, attendance, assets, totals, monthly }) => {
-        this.politician = politician;
-        this.expenses = expenses.content ?? [];
-        this.totalElements = expenses.totalElements ?? 0;
-        this.page = 0;
-        this.attendanceSummary = attendance;
-        this.assetEvolution = assets;
-        this.expenseTotals = totals;
-        this.monthlyBars = this.toMonthlyBars(monthly);
-        this.loading = false;
+    this.politicianService.findById(id).subscribe({
+      next: (p) => {
+        this.politician = p;
+        this.politicianLoading = false;
         this.cdr.markForCheck();
-        this.setupLiveFilters();
       },
       error: (err) => {
         console.error(err);
         this.error = 'Não foi possível carregar o perfil.';
-        this.loading = false;
+        this.politicianLoading = false;
+        this.cdr.markForCheck();
+      }
+    });
+
+    this.attendanceService.getSummary(id).pipe(
+      catchError((err) => {
+        console.error(err);
+        return of(null);
+      })
+    ).subscribe({
+      next: (a) => {
+        this.attendanceSummary = a;
+        this.attendanceLoading = false;
+        this.cdr.markForCheck();
+      }
+    });
+
+    this.assetService.getEvolution(id).pipe(
+      catchError((err) => {
+        console.error(err);
+        return of(null);
+      })
+    ).subscribe({
+      next: (a) => {
+        this.assetEvolution = a;
+        this.assetLoading = false;
+        this.cdr.markForCheck();
+      }
+    });
+
+    this.expenseService.totalsByPolitician(id).pipe(
+      catchError((err) => {
+        console.error(err);
+        return of(null);
+      })
+    ).subscribe({
+      next: (t) => {
+        this.expenseTotals = t;
+        this.totalsLoading = false;
+        this.cdr.markForCheck();
+      }
+    });
+
+    this.expenseService.getMonthly(id).pipe(
+      catchError((err) => {
+        console.error(err);
+        return of(null);
+      })
+    ).subscribe({
+      next: (m) => {
+        this.monthlyBars = this.toMonthlyBars(m);
+        this.monthlyLoading = false;
+        this.cdr.markForCheck();
+      }
+    });
+
+    this.expenseService.search({
+      politicianId: id,
+      page: 0,
+      size: this.pageSize,
+      sort: this.filterForm.controls.sort.value
+    }).subscribe({
+      next: (res) => {
+        this.expenses = res.content ?? [];
+        this.totalElements = res.totalElements ?? 0;
+        this.expensesLoading = false;
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error(err);
+        this.expensesLoading = false;
         this.cdr.markForCheck();
       }
     });
@@ -162,7 +211,6 @@ export class PoliticianDetailComponent implements OnInit {
     }
     this.page += 1;
     this.loadExpenses(true);
-
   }
 
   private loadExpenses(append: boolean): void {

@@ -1,6 +1,6 @@
 <section class="detail">
 
-  @if (loading) {
+  @if (politicianLoading) {
   <div class="skeleton-page" role="status" aria-live="polite">
     <span class="sr-only">Carregando perfil…</span>
 
@@ -28,7 +28,7 @@
   <p class="error" role="alert">{{ error }}</p>
   }
 
-  @if (!loading && politician; as p) {
+  @if (!politicianLoading && politician; as p) {
 
   <button type="button" class="back" (click)="goBack()">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
@@ -64,7 +64,15 @@
       <h2>Presenças registadas</h2>
     </header>
 
-    @if (presenceCount > 0 && attendanceSummary; as s) {
+    @if (attendanceLoading) {
+    <div class="section-skeleton" role="status" aria-live="polite">
+      <span class="sr-only">Carregando assiduidade…</span>
+      <div class="sk-line w-30"></div>
+      <div class="sk-line tall w-60"></div>
+      <div class="sk-line w-90"></div>
+      <div class="sk-line w-70"></div>
+    </div>
+    } @else if (presenceCount > 0 && attendanceSummary; as s) {
 
     <div class="attendance-panel">
 
@@ -137,7 +145,14 @@
       <strong>Não há atualização oficial anual</strong> durante o mandato.
     </p>
 
-    @if (assetEvolution?.points?.length) {
+    @if (assetLoading) {
+    <div class="section-skeleton" role="status" aria-live="polite">
+      <span class="sr-only">Carregando patrimônio…</span>
+      <div class="sk-line w-40"></div>
+      <div class="sk-line w-70"></div>
+      <div class="sk-line w-50"></div>
+    </div>
+    } @else if (assetEvolution?.points?.length) {
     <ul class="asset-list">
       @for (pt of assetEvolution!.points; track pt.year) {
       <li>
@@ -162,7 +177,17 @@
       <h2>Cota parlamentar (CEAP)</h2>
     </header>
 
-    @if (expenseTotals; as t) {
+    <!-- Totais -->
+    @if (totalsLoading) {
+    <div class="totals-grid">
+      @for (i of [1, 2, 3]; track i) {
+      <div class="total-card is-skeleton">
+        <span class="sk-line w-60"></span>
+        <span class="sk-line tall w-80"></span>
+      </div>
+      }
+    </div>
+    } @else if (expenseTotals; as t) {
     <div class="totals-grid">
       <div class="total-card">
         <span class="label">Total geral</span>
@@ -179,7 +204,14 @@
     </div>
     }
 
-    @if (monthlyBars.length) {
+    @if (monthlyLoading) {
+    <div class="section-skeleton" role="status" aria-live="polite">
+      <span class="sr-only">Carregando gráfico mensal…</span>
+      @for (i of [1, 2, 3, 4]; track i) {
+      <div class="sk-line w-90"></div>
+      }
+    </div>
+    } @else if (monthlyBars.length) {
     <div class="month-chart" aria-label="Gastos por mês">
       @for (m of monthlyBars; track m.month) {
       <div class="month-row">
@@ -248,7 +280,19 @@
       }
     </div>
 
-    @if (expenses.length === 0 && !expensesLoading) {
+    @if (expensesLoading && expenses.length === 0) {
+    <div class="table-skeleton" role="status" aria-live="polite">
+      <span class="sr-only">Carregando despesas…</span>
+      @for (i of [1, 2, 3, 4, 5]; track i) {
+      <div class="sk-row">
+        <span class="sk-line"></span>
+        <span class="sk-line"></span>
+        <span class="sk-line"></span>
+        <span class="sk-line"></span>
+      </div>
+      }
+    </div>
+    } @else if (expenses.length === 0) {
     <div class="empty-state">
       <p class="empty-title">Nenhuma despesa encontrada.</p>
       <p class="empty-hint">
